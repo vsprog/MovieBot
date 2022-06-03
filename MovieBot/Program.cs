@@ -3,8 +3,18 @@ using System.Net.Http.Headers;
 
 using MovieBot.Services;
 
+using VkNet;
+using VkNet.Abstractions;
+using VkNet.Model;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
+    .AddSingleton<IVkApi>(provider => 
+    {
+        var api = new VkApi();
+        api.Authorize(new ApiAuthParams { AccessToken = builder.Configuration["Config:AccessToken"] });
+        return api;
+    })
     .AddHttpClient<MovieFinder>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["ContentSources:Searcher"]);
