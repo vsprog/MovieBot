@@ -31,7 +31,7 @@ namespace MovieBot.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Callback([FromBody] Updates updates)
+        public async Task<IActionResult> Respond([FromBody] Updates updates)
         {
             switch (updates.Type)
             {
