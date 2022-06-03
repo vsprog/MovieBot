@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieBot", "MovieBot\MovieBot.csproj", "{2DC447A4-A355-473E-A840-78B70877CD42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DC447A4-A355-473E-A840-78B70877CD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC447A4-A355-473E-A840-78B70877CD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DC447A4-A355-473E-A840-78B70877CD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DC447A4-A355-473E-A840-78B70877CD42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F5FAD4F0-225D-419C-B3EE-DBEFEF672802}
+	EndGlobalSection
+EndGlobal
