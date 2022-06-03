@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+
+using Microsoft.AspNetCore.Mvc;
 
 using MovieBot.Infractructure;
 using MovieBot.Models;
 using MovieBot.Services;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using VkNet.Abstractions;
+using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
-using VkNet.Utils;
 
 namespace MovieBot.Controllers
 {
@@ -31,34 +36,36 @@ namespace MovieBot.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Respond([FromBody] Updates updates)
+        public async Task<IActionResult> Respond([FromBody] JsonElement updates)
         {
-            switch (updates.Type)
+            var type = updates.GetProperty("type").GetString();
+
+            switch (type)
             {
                 case "confirmation":
                     return Ok(configuration["Config:Confirmation"]);
-
                 case "message_new":
-                    Message msg = Message.FromJson(new VkResponse(updates.Object));
-                    string txt = msg.Text;
+                    var msgObject = updates.GetProperty("object").GetProperty("message");
+                    var message = JsonConvert.DeserializeObject<Message>(msgObject.ToString());
                     Random random = new Random();
                     int rndInd = random.Next(0, Constants.Answers.Length);
                     var messageParams = new MessagesSendParams
                     {
                         RandomId = new DateTime().Millisecond,
-                        PeerId = msg.PeerId.Value,
+                        PeerId = message.PeerId,
                         Message = string.Empty
                     };
 
-                    if (txt.StartsWith("Найди "))
+                    if (message.Text.ToLower().StartsWith("найди "))
                     {
-                        string queryString = txt.Substring(txt.IndexOf(' '));
+                        string queryString = message.Text.Substring(message.Text.IndexOf(' ')+1);
                         var movieId = await finder.Search(queryString);
 
                         if (movieId == null)
                         {
                             messageParams.Message = Constants.Answers[rndInd];
-                            vkApi.Messages.Send(messageParams);
+                            Send(messageParams);
+
                             return Ok("ok");
                         }
 
@@ -67,21 +74,36 @@ namespace MovieBot.Controllers
 
                         if (result.Length == 0)
                         {
-                            messageParams.Message = Constants.Answers[rndInd];
-                            vkApi.Messages.Send(messageParams);
+                            messageParams.Message = "Не найдено озвучек";
+                            Send(messageParams);
+
                             return Ok("ok");
                         }
 
                         foreach (Frame fr in result)
                         {
-                            messageParams.Message = $"В переводе {fr.Translate} \n {fr.Url}";
-                            vkApi.Messages.Send(messageParams);
+                            messageParams.Message = $"В озвучке {fr.Translate} \n {fr.Url}";
+                            Send(messageParams);
                         }
                     }
+                    else 
+                    {
+                        messageParams.Message = "Чтобы воспользоваться поиском, напишите: \"найди название_фильма\" ";
+                        Send(messageParams);
+                    }
+
                     break;
             }
 
             return Ok("ok");
+        }
+
+        private void Send(MessagesSendParams message)
+        {
+            if (!Request.Headers.Keys.Contains("X-Retry-Counter"))
+            {
+                vkApi.Messages.Send(message);
+            }
         }
     }
 }
