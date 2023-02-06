@@ -33,6 +33,18 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
+          
+      #substitute production appsettings entries to appsettings json file
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{env.DOTNET_ROOT}}/myapp/appsettings.json'
+        env:
+          ContentSources.Searcher: ${{ secrets.MOVIE_BOT_SEARCHER }}
+          ContentSources.Yohoho: ${{ secrets.MOVIE_BOT_YOHOHO }}
+          ContentSources.YohoReferer: ${{ secrets.MOVIE_BOT_REFERER }}
+          Config.AccessToken: ${{ secrets.MOVIE_BOT_ACCESS_TOKEN }}
+          Config.Confirmation: ${{ secrets.MOVIE_BOT_CONFIRMATION }}
 
   deploy:
     runs-on: windows-latest
