@@ -6,29 +6,20 @@ namespace MovieBot.Infractructure
     {
         public static Dictionary<string, string> DecodeStreams(string data)
         {
-            string salt = "@#!^$";
-            int[] iterations = new[] { 2, 3 };
-            var saltCombos = new List<string>();
-
-            foreach (int it in iterations)
-            {
-                foreach (var s in Product(salt, it))
-                {
-                    var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(s);
-                    saltCombos.Add(Convert.ToBase64String(plainTextBytes));
-                }
-            }
+            const string salt = "@#!^$";
+            var iterations = new[] { 2, 3 };
+            var saltCombos = iterations
+                .SelectMany(it => Product(salt, it), (it, s) => System.Text.Encoding.UTF8.GetBytes(s))
+                .Select(Convert.ToBase64String)
+                .ToList();
 
             saltCombos.Add("#h");
             saltCombos.Add("//_//");
 
-            foreach (string combo in saltCombos)
-            {
-                data = data.Replace(combo, "");
-            }
+            data = saltCombos.Aggregate(data, (current, combo) => current.Replace(combo, ""));
 
-            byte[] dataBytes = Convert.FromBase64String(data);
-            string result = System.Text.Encoding.UTF8.GetString(dataBytes);
+            var dataBytes = Convert.FromBase64String(data);
+            var result = System.Text.Encoding.UTF8.GetString(dataBytes);
 
             return result.Split(new[] { ',' })
                 .ToDictionary(
@@ -40,14 +31,11 @@ namespace MovieBot.Infractructure
         {
             var res = new List<string>() { string.Empty };
 
-            for (int i = 0; i < times; i++)
+            for (var i = 0; i < times; i++)
             {
-                var tmp = new List<string>();
-
-                foreach (string s in res)
-                {
-                    foreach (char c in income) tmp.Add(s + c);
-                }
+                var tmp = res
+                    .SelectMany(s => income, (s, c) => s + c)
+                    .ToList();
 
                 res = tmp;
             }

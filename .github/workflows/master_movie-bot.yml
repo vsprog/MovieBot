@@ -34,7 +34,8 @@ jobs:
         with:
           files: '${{env.DOTNET_ROOT}}\myapp\appsettings.json'
         env:
-          ContentSources.Searcher: ${{ secrets.MOVIE_BOT_SEARCHER }}
+          ContentSources.Kinopoisk: ${{ secrets.MOVIE_BOT_SEARCHER }}
+          ContentSources.Lab: ${{ secrets.MOVIE_BOT_LAB }}
           ContentSources.Yohoho: ${{ secrets.MOVIE_BOT_YOHOHO }}
           ContentSources.YohoReferer: ${{ secrets.MOVIE_BOT_REFERER }}
           Config.AccessToken: ${{ secrets.MOVIE_BOT_ACCESS_TOKEN }}
