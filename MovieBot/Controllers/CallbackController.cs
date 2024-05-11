@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieBot.Infractructure;
 using MovieBot.Services;
+using MovieBot.Services.Models;
 using Newtonsoft.Json;
 using VkNet.Abstractions;
 using VkNet.Model;
@@ -69,11 +70,9 @@ namespace MovieBot.Controllers
                     {
                         message.Message = Constants.Answers[rndInd];
                     }
-
-                    foreach (var movie in movies)
-                    {
-                        message.Message = $"{movie.Title} \n {movie.Url}";
-                    }
+                    
+                    message.Message = string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
+                    
                     break;
             }
 
