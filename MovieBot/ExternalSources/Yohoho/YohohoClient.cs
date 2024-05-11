@@ -35,7 +35,7 @@ namespace MovieBot.ExternalSources.Yohoho
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                return Enumerable.Empty<Frame>();;
+                return Enumerable.Empty<Frame>();
             }
 
             var content = await response.Content.ReadAsStringAsync();

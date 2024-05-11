@@ -21,7 +21,7 @@ public class YohohoService
 
         if (movieId == null)
         {
-            return null;
+            return Enumerable.Empty<FilmDto>().ToList();;
         }
         
         var frames = await _yohohoClient.GetFrames(movieId);
