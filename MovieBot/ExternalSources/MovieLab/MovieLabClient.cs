@@ -20,7 +20,7 @@ public class MovieLabClient
 
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            return [];
+            return Enumerable.Empty<LabFilm>();
         }
         
         var content = await response.Content.ReadAsStringAsync();
