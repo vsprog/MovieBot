@@ -15,7 +15,7 @@ public class YohohoService
         _yohohoClient = yohohoClient;
     }
     
-    public async Task<List<FilmDto>?> GetMovies(string query)
+    public async Task<List<FilmDto>> GetMovies(string query)
     {
         var movieId = await _kinopoiskClient.Search(query);
 

@@ -9,14 +9,8 @@ using VkNet.Abstractions;
 using VkNet.Model;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services
-    .AddSingleton<IVkApi>(_ => 
-    {
-        var api = new VkApi();
-        api.Authorize(new ApiAuthParams { AccessToken = builder.Configuration["Config:AccessToken"] });
-        return api;
-    })
-    .AddHttpClient<KinopoiskClient>(client =>
+
+builder.Services.AddHttpClient<KinopoiskClient>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["ContentSources:Kinopoisk"]);
         client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
@@ -57,6 +51,12 @@ builder.Services
 
 builder.Services.AddSingleton<YohohoService, YohohoService>();
 builder.Services.AddSingleton<LabService, LabService>();
+builder.Services.AddSingleton<IVkApi>(_ =>
+{
+    var api = new VkApi();
+    api.Authorize(new ApiAuthParams { AccessToken = builder.Configuration["Config:AccessToken"] });
+    return api;
+});
 
 builder.Services.AddControllers();
 

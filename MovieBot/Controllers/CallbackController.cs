@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieBot.Infractructure;
 using MovieBot.Services;
-using MovieBot.Services.Models;
 using Newtonsoft.Json;
 using VkNet.Abstractions;
 using VkNet.Model;
@@ -63,7 +62,7 @@ namespace MovieBot.Controllers
                     break;
 
                 default:
-                    var title = income!.Text[(income.Text.IndexOf(' ') + 1)..];
+                    var title = income.Text[(income.Text.IndexOf(' ') + 1)..];
                     var movies = await _labService.GetMovies(title);
 
                     if (movies.Count == 0)
@@ -72,12 +71,10 @@ namespace MovieBot.Controllers
                     }
                     
                     message.Message = string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
-                    
                     break;
             }
 
             Send(message);
-            
             return Ok("ok");
         }
 

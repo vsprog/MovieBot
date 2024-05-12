@@ -19,12 +19,9 @@ namespace MovieBot.Controllers
         {
             var movies = await _yohohoService.GetMovies(query);
             
-            if (movies == null || movies.Count == 0)
-            {
-                return NotFound();
-            }
-            
-            return Ok(movies);
+            return movies.Count == 0 
+                ? NotFound() 
+                : Ok(movies);
         }
         
         [Route("/lab/{query}")]
@@ -32,12 +29,9 @@ namespace MovieBot.Controllers
         {
             var movies = await _labService.GetMovies(query);
             
-            if (movies.Count == 0)
-            {
-                return NotFound();
-            }
-            
-            return Ok(movies);
+            return movies.Count == 0 
+                ? NotFound() 
+                : Ok(movies);
         }
     }
 }
