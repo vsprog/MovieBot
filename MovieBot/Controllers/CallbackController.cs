@@ -65,12 +65,9 @@ namespace MovieBot.Controllers
                     var title = income.Text[(income.Text.IndexOf(' ') + 1)..];
                     var movies = await _labService.GetMovies(title);
 
-                    if (movies.Count == 0)
-                    {
-                        message.Message = Constants.Answers[rndInd];
-                    }
-                    
-                    message.Message = string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
+                    message.Message = movies.Count == 0 
+                        ? Constants.Answers[rndInd]
+                        : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
                     break;
             }
 
