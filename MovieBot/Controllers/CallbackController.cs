@@ -5,6 +5,7 @@ using MovieBot.Services;
 using Newtonsoft.Json;
 using VkNet.Abstractions;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 
 namespace MovieBot.Controllers
@@ -67,7 +68,12 @@ namespace MovieBot.Controllers
 
                     message.Message = movies.Count == 0 
                         ? Constants.Answers[rndInd]
-                        : string.Concat(movies.Select(m => $"{m.Title} \n {m.PosterLink} \n {m.Url} \n"));
+                        : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
+
+                    message.Attachments = movies.Select(m => new Photo
+                    {
+                        Url = new Uri(m.PosterLink!)
+                    });
                     break;
             }
 
