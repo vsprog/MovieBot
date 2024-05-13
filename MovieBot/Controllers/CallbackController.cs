@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using MovieBot.Infractructure;
 using MovieBot.Services;
@@ -61,7 +63,6 @@ namespace MovieBot.Controllers
                 case { Text: var text } when !text.StartsWith("найди ", StringComparison.CurrentCultureIgnoreCase):
                     message.Message = "Чтобы воспользоваться поиском, напишите: \"найди название_фильма\" ";
                     break;
-
                 default:
                     var title = income.Text[(income.Text.IndexOf(' ') + 1)..];
                     var movies = await _labService.GetMovies(title);
@@ -69,11 +70,8 @@ namespace MovieBot.Controllers
                     message.Message = movies.Count == 0 
                         ? Constants.Answers[rndInd]
                         : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
-
-                    message.Attachments = movies.Select(m => new Photo
-                    {
-                        Url = new Uri(m.PosterLink!)
-                    });
+                    message.Attachments = UploadPosters(income.UserId, movies.Select(m => m.PosterLink!));
+                    
                     break;
             }
 
@@ -87,6 +85,20 @@ namespace MovieBot.Controllers
             {
                 _vkApi.Messages.Send(message);
             }
+        }
+
+        [Obsolete("Obsolete")]
+        private IEnumerable<Photo> UploadPosters(long? userId, IEnumerable<string> links)
+        {
+            var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
+            using var wc = new WebClient();
+
+            return links.Select(link =>
+            {
+                var uploadedUrl = Encoding.ASCII.GetString(
+                    wc.UploadFile(uploadServer.UploadUrl, link));
+                return _vkApi.Photo.SaveMessagesPhoto(uploadedUrl).FirstOrDefault();
+            })!;
         }
     }
 }
