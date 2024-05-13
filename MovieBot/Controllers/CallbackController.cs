@@ -67,7 +67,7 @@ namespace MovieBot.Controllers
 
                     message.Message = movies.Count == 0 
                         ? Constants.Answers[rndInd]
-                        : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
+                        : string.Concat(movies.Select(m => $"{m.Title} \n {m.PosterLink} \n {m.Url} \n"));
                     break;
             }
 
