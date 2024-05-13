@@ -96,8 +96,9 @@ namespace MovieBot.Controllers
             return await Task.WhenAll(links.Select(async link =>
             {
                 var image = await wc.DownloadDataTaskAsync(link);
-                var uploadedUrl = Encoding.ASCII.GetString(await wc.UploadDataTaskAsync(uploadServer.UploadUrl, image));
-                return _vkApi.Photo.SaveMessagesPhoto(uploadedUrl).FirstOrDefault();
+                var uploadResponse = Encoding.ASCII.GetString(await wc.UploadDataTaskAsync(uploadServer.UploadUrl, image));
+                var data = JsonConvert.DeserializeObject<JsonElement>(uploadResponse);
+                return _vkApi.Photo.SaveMessagesPhoto(data.GetProperty("upload_url").ToString()).FirstOrDefault();
             }));
         }
     }
