@@ -70,14 +70,15 @@ namespace MovieBot.Controllers
                     message.Message = movies.Count == 0 
                         ? Constants.Answers[rndInd]
                         : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
-                    message.Attachments = movies
-                        .Select(m => _vkApi.Photo.SaveMessagesPhoto(m.PosterLink))
-                        .Select(photo => new Photo
-                        {
-                            OwnerId = photo[0].OwnerId, 
-                            Id = photo[0].Id
-                        })
-                        .ToList();
+                    message.Attachments = await UploadPosters(income.UserId, movies.Select(m => m.PosterLink));
+                        // movies
+                        // .Select(m => _vkApi.Photo.SaveMessagesPhoto(m.PosterLink))
+                        // .Select(photo => new Photo
+                        // {
+                        //     OwnerId = photo[0].OwnerId, 
+                        //     Id = photo[0].Id
+                        // })
+                        // .ToList();
                     
                     break;
             }
@@ -93,5 +94,39 @@ namespace MovieBot.Controllers
                 _vkApi.Messages.Send(message);
             }
         }
+
+        [Obsolete("Obsolete")]
+        private async Task<IEnumerable<Photo>> UploadPosters(long? userId, IEnumerable<string?> links)
+        {
+            var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
+            using var wc = new WebClient();
+            
+            return await Task.WhenAll(links
+                .Where(link => link is not null)
+                .Select(async link =>
+                {
+                    var imageData = wc.DownloadData(link!);
+                    var uploadedPhoto = Encoding.ASCII.GetString(await wc.UploadDataTaskAsync(uploadServer.UploadUrl, imageData));
+                    //var data = JsonConvert.DeserializeObject<JsonElement>(uploadedPhoto);
+                    return _vkApi.Photo.SaveMessagesPhoto(uploadedPhoto)
+                        .FirstOrDefault();
+                })
+            );
+            
+        }
+        
+        // [Obsolete("Obsolete")]
+        // private Photo UploadPhotoFromUrl(string imageUrl, long? userId)
+        // {
+        //     using var webClient = new WebClient();
+        //     var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
+        //     var imageData = webClient.DownloadData(imageUrl);
+        //     using var memoryStream = new MemoryStream(imageData);
+        //
+        //     
+        //     var uploadedPhoto = _vkApi.Photo.Upload(uploadServer.UploadUrl, memoryStream);
+        //
+        //     return uploadedPhoto;
+        // }
     }
 }
