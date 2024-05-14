@@ -70,7 +70,14 @@ namespace MovieBot.Controllers
                     message.Message = movies.Count == 0 
                         ? Constants.Answers[rndInd]
                         : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
-                    message.Attachments = await UploadPosters(income.UserId, movies.Select(m => m.PosterLink!));
+                    message.Attachments = movies
+                        .Select(m => _vkApi.Photo.SaveMessagesPhoto(m.PosterLink))
+                        .Select(photo => new Photo
+                        {
+                            OwnerId = photo[0].OwnerId, 
+                            Id = photo[0].Id
+                        })
+                        .ToList();
                     
                     break;
             }
@@ -85,23 +92,6 @@ namespace MovieBot.Controllers
             {
                 _vkApi.Messages.Send(message);
             }
-        }
-
-        [Obsolete("Obsolete")]
-        private async Task<IEnumerable<Photo>> UploadPosters(long? userId, IEnumerable<string> links)
-        {
-            var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
-            using var wc = new WebClient();
-
-            return await Task.WhenAll(links.Select(async link =>
-            {
-                var image = await wc.DownloadDataTaskAsync(link);
-                var uploadResponse = Encoding.ASCII.GetString(await wc.UploadDataTaskAsync(uploadServer.UploadUrl, image));
-                var data = JsonConvert.DeserializeObject<JsonElement>(uploadResponse);
-                return _vkApi.Photo.SaveMessagesPhoto(
-                        data.GetProperty("photo").ToString())
-                    .FirstOrDefault();
-            }));
         }
     }
 }
