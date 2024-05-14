@@ -50,32 +50,43 @@ public class CallbackController : Controller
         var income = JsonConvert.DeserializeObject<Message>(msgObject.ToString());
         var random = new Random();
         var rndInd = random.Next(0, Constants.Answers.Length);
-        var message = new MessagesSendParams
+        var messages = new List<MessagesSendParams>
         {
-            RandomId = new DateTime().Millisecond,
-            PeerId = income?.PeerId,
-            Message = string.Empty
+            new()
+            {
+                RandomId = new DateTime().Millisecond,
+                PeerId = income?.PeerId,
+                Message = string.Empty
+            }
         };
 
         switch (income)
         {
             case null:
             case { Text: var text } when !text.StartsWith("найди ", StringComparison.CurrentCultureIgnoreCase):
-                message.Message = "Чтобы воспользоваться поиском, напишите: \"найди название_фильма\" ";
+                messages[0].Message = "Чтобы воспользоваться поиском, напишите: \"найди название_фильма\" ";
                 break;
             default:
                 var title = income.Text[(income.Text.IndexOf(' ') + 1)..];
                 var movies = await _labService.GetMovies(title);
 
-                message.Message = movies.Count == 0 
-                    ? Constants.Answers[rndInd]
-                    : string.Concat(movies.Select(m => $"{m.Title} \n {m.Url} \n"));
-                message.Attachments = await UploadPosters(income.UserId, movies
-                    .Select(m => m.PosterLink));
+                if (movies.Count == 0)
+                {
+                    messages[0].Message = Constants.Answers[rndInd];
+                }
+
+                messages = (await Task.WhenAll(movies.Select(async m =>
+                    new MessagesSendParams
+                    {
+                        RandomId = new DateTime().Millisecond, PeerId = income?.PeerId,
+                        Message = $"{m.Title} \n {m.Url} \n",
+                        Attachments = await UploadPoster(income?.UserId, m.PosterLink)
+                    })
+                )).ToList();
                 break;
         }
-
-        Send(message);
+        
+        messages.ForEach(Send);
         return Ok("ok");
     }
 
@@ -86,19 +97,17 @@ public class CallbackController : Controller
             _vkApi.Messages.Send(message);
         }
     }
-
-    private async Task<IEnumerable<Photo>> UploadPosters(long? userId, IEnumerable<string?> links)
+    
+    private async Task<IEnumerable<Photo>> UploadPoster(long? userId, string? link)
     {
-        var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
+        if (link is null)
+        {
+            return Enumerable.Empty<Photo>();
+        }
         
-        return await Task.WhenAll(links
-            .Where(link => link is not null)
-            .Select(async link =>
-            {
-                var response = await _fileLoader.UploadFile(uploadServer.UploadUrl, link!, "jpg");
-                return _vkApi.Photo.SaveMessagesPhoto(response).First();
-            })
-        );
+        var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
+        var response = await _fileLoader.UploadFile(uploadServer.UploadUrl, link, "jpg");
+        return _vkApi.Photo.SaveMessagesPhoto(response);
     }
 }
 
