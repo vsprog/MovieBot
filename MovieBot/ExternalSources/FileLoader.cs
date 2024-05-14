@@ -1,5 +1,3 @@
-using System.Net;
-using System.Text;
 using System.Net.Http.Headers;
 
 namespace MovieBot.ExternalSources;
@@ -13,9 +11,9 @@ public class FileLoader
         _client = client;
     }
     
-    public async Task<string> UploadFile(string serverUrl, string file, string fileExtension)
+    public async Task<string> UploadFile(string serverUrl, string fileUrl, string fileExtension)
     {
-        var data = GetBytes(file);
+        var data = await _client.GetByteArrayAsync(fileUrl);
         var content = new ByteArrayContent(data);
         content.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
         
@@ -23,13 +21,6 @@ public class FileLoader
         requestContent.Add(content, "file", $"file.{fileExtension}");
 
         var response = await _client.PostAsync(serverUrl, requestContent);
-        return Encoding.Default.GetString(await response.Content.ReadAsByteArrayAsync());
-    }
-    
-    [Obsolete("Obsolete")]
-    private static byte[] GetBytes(string fileUrl)
-    {
-        using var webClient = new WebClient();
-        return webClient.DownloadData(fileUrl);
+        return await response.Content.ReadAsStringAsync();
     }
 }
