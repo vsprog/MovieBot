@@ -16,12 +16,13 @@ public class FileLoader
     public async Task<string> UploadFile(string serverUrl, string file, string fileExtension)
     {
         var data = GetBytes(file);
-        var requestContent = new MultipartFormDataContent();
         var content = new ByteArrayContent(data);
         content.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+        
+        var requestContent = new MultipartFormDataContent();
         requestContent.Add(content, "file", $"file.{fileExtension}");
 
-        var response = _client.PostAsync(serverUrl, requestContent).Result;
+        var response = await _client.PostAsync(serverUrl, requestContent);
         return Encoding.Default.GetString(await response.Content.ReadAsByteArrayAsync());
     }
     
