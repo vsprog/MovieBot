@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using MovieBot.ExternalSources;
 using MovieBot.ExternalSources.Kinopoisk;
 using MovieBot.ExternalSources.MovieLab;
 using MovieBot.ExternalSources.Yohoho;
@@ -30,6 +31,8 @@ public static class ServiceCollectionExtensions
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
+        
+        services.AddHttpClient<FileLoader>();
     }
 
     private static void AddConfiguredClient<TClient>(this IServiceCollection services, 
