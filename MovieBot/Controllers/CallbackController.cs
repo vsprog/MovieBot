@@ -73,6 +73,7 @@ public class CallbackController : Controller
                 if (movies.Count == 0)
                 {
                     messages[0].Message = Constants.Answers[rndInd];
+                    break;
                 }
 
                 messages = (await Task.WhenAll(movies.Select(async m =>
