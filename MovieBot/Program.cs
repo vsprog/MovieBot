@@ -6,6 +6,9 @@ using VkNet.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var botConfigurationSection = builder.Configuration.GetSection(TelegramConfiguration.Configuration);
+builder.Services.Configure<TelegramConfiguration>(botConfigurationSection);
+
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
 builder.Services.AddScoped<LabService>();

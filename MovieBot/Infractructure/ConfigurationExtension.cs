@@ -9,7 +9,9 @@ public static class ConfigurationExtension
     {
         var o = serviceProvider.GetService<IOptions<T>>();
         if (o is null)
+        {
             throw new ArgumentNullException(nameof(T));
+        }
 
         return o.Value;
     }
