@@ -4,6 +4,7 @@ using MovieBot.ExternalSources;
 using MovieBot.ExternalSources.Kinopoisk;
 using MovieBot.ExternalSources.MovieLab;
 using MovieBot.ExternalSources.Yohoho;
+using Telegram.Bot;
 
 namespace MovieBot.Infractructure;
 
@@ -33,6 +34,14 @@ public static class ServiceCollectionExtensions
         });
         
         services.AddHttpClient<FileLoader>();
+        
+        services.AddHttpClient("telegram_bot_client")
+            .AddTypedClient<ITelegramBotClient>((httpClient, serviceProvider) =>
+            {
+                var tgConfig = serviceProvider.GetConfiguration<TelegramConfiguration>();
+                TelegramBotClientOptions options = new(tgConfig.BotToken);
+                return new TelegramBotClient(options, httpClient);
+            });
     }
 
     private static void AddConfiguredClient<TClient>(this IServiceCollection services, 

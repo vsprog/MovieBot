@@ -6,17 +6,13 @@ namespace MovieBot.Controllers;
 
 public class CallbackController : Controller
 {
-    private readonly VkMessageHandlerService _handlerService;
-    
-    public CallbackController(VkMessageHandlerService handlerService)
-    {
-        _handlerService = handlerService;
-    }
-
     [HttpPost]
-    public async Task<IActionResult> Respond([FromBody] JsonElement updates, CancellationToken cancellationToken)
+    public async Task<IActionResult> Respond(
+        [FromBody] JsonElement updates, 
+        [FromServices] VkMessageHandlerService handlerService,
+        CancellationToken cancellationToken)
     {
-        var result = await _handlerService.HandleUpdateAsync(updates, cancellationToken);
+        var result = await handlerService.HandleUpdateAsync(updates, cancellationToken);
         return Ok(result);
     }
 }

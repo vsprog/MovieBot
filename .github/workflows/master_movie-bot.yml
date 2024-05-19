@@ -40,6 +40,9 @@ jobs:
           ContentSources.YohoReferer: ${{ secrets.MOVIE_BOT_REFERER }}
           Config.AccessToken: ${{ secrets.MOVIE_BOT_ACCESS_TOKEN }}
           Config.Confirmation: ${{ secrets.MOVIE_BOT_CONFIRMATION }}
+          Telegram.HostAddress: ${{TELEGRAM_HOST}}
+          Telegram.BotToken: ${{TELEGRAM_TOKEN}}
+          Telegram.SecretToken: ${{TELEGRAM_SECRET}}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

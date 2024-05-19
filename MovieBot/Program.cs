@@ -10,12 +10,15 @@ builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
 builder.Services.AddScoped<LabService>();
 builder.Services.AddScoped<VkMessageHandlerService>();
+builder.Services.AddScoped<TgMessageHandlerService>();
 builder.Services.AddSingleton<IVkApi>(_ =>
 {
     var api = new VkApi();
     api.Authorize(new ApiAuthParams { AccessToken = builder.Configuration["Config:AccessToken"] });
     return api;
 });
+
+builder.Services.AddHostedService<ConfigureWebhook>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
