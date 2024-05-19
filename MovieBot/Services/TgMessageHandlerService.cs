@@ -78,7 +78,7 @@ public class TgMessageHandlerService
             await _botClient.SendPhotoAsync(
                 chatId: incoming.Chat.Id,
                 photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
-                caption: $"Ссылка для просмотра: <br> <a href=\"{movie.Url}\">{movie.Title}</a>",
+                caption: $"Ссылка для просмотра: <a href=\"{movie.Url}\">{movie.Title}</a>",
                 parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken);
         }
