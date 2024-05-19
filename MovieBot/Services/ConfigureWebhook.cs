@@ -24,7 +24,11 @@ public class ConfigureWebhook : IHostedService
         
         await botClient.SetWebhookAsync(
             url: $"{_botConfig.HostAddress}/telegram/respond",
-            allowedUpdates: Array.Empty<UpdateType>(),
+            allowedUpdates: new []
+            {
+                UpdateType.Message, 
+                UpdateType.EditedMessage
+            },
             secretToken: _botConfig.SecretToken,
             cancellationToken: cancellationToken);
     }
