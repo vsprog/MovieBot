@@ -27,6 +27,7 @@ public class TgMessageHandlerService
         var handler = update switch
         {
             { Message: { } message } => OnMessageReceived(message, cancellationToken),
+            { EditedMessage: { } message } => OnMessageReceived(message, cancellationToken),
             _  => Task.CompletedTask
         };
 
@@ -43,7 +44,8 @@ public class TgMessageHandlerService
         var action = messageText.Split(' ')[0] switch
         {
             "/start" => SendTextMessage(message, "Для поиска напишите: \"/find название_фильма\"", cancellationToken),
-            "/find" => SendMoviesResult(message, cancellationToken),
+            "/find" => SendMoviesResult(message, cancellationToken), 
+            _ => SendTextMessage(message, "Для поиска желаемого фильма напишите: \"/find название_фильма\"", cancellationToken)
         };
         
         await action;
