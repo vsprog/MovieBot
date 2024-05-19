@@ -7,8 +7,9 @@ using VkNet.Model;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClients(builder.Configuration);
-builder.Services.AddSingleton<YohohoService, YohohoService>();
-builder.Services.AddSingleton<LabService, LabService>();
+builder.Services.AddScoped<YohohoService>();
+builder.Services.AddScoped<LabService>();
+builder.Services.AddScoped<VkMessageHandlerService>();
 builder.Services.AddSingleton<IVkApi>(_ =>
 {
     var api = new VkApi();
@@ -16,6 +17,7 @@ builder.Services.AddSingleton<IVkApi>(_ =>
     return api;
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 
 var app = builder.Build();
