@@ -24,7 +24,9 @@ builder.Services.AddSingleton<IVkApi>(_ =>
 builder.Services.AddHostedService<ConfigureWebhook>();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddNewtonsoftJson();
 
 var app = builder.Build();
 app.UseRouting();
