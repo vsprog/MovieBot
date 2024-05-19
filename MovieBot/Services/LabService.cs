@@ -12,9 +12,9 @@ public class LabService
         _movieLabClient = movieLabClient;
     }
 
-    public async Task<List<FilmDto>> GetMovies(string query)
+    public async Task<List<FilmDto>> GetMovies(string query, CancellationToken cancellationToken)
     {
-        var films = await _movieLabClient.GetFilms(query);
+        var films = await _movieLabClient.GetFilms(query, cancellationToken);
 
         return films
             .Select(f => new FilmDto(f!))

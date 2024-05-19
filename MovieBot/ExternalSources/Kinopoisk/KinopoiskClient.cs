@@ -13,9 +13,9 @@ namespace MovieBot.ExternalSources.Kinopoisk
             _client = client;
         }
 
-        public async Task<string?> Search(string queryString)
+        public async Task<string?> Search(string queryString, CancellationToken cancellationToken)
         {
-            var token = await GetToken();
+            var token = await GetToken(cancellationToken);
 
             if (string.IsNullOrEmpty(queryString) || string.IsNullOrEmpty(token))
             {
@@ -36,7 +36,7 @@ namespace MovieBot.ExternalSources.Kinopoisk
                 }
             });
 
-            var response = await _client.PostAsync("api-frontend//graphql", new StringContent(body, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync("api-frontend//graphql", new StringContent(body, Encoding.UTF8, "application/json"), cancellationToken);
             _client.DefaultRequestHeaders.Remove("x-token");
             _client.DefaultRequestHeaders.Remove("service-id");
 
@@ -45,7 +45,7 @@ namespace MovieBot.ExternalSources.Kinopoisk
                 return null;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
             var data = JsonConvert.DeserializeObject<dynamic>(content);
             dynamic? res;
             
@@ -61,10 +61,10 @@ namespace MovieBot.ExternalSources.Kinopoisk
             return res;
         }
 
-        private async Task<string?> GetToken()
+        private async Task<string?> GetToken(CancellationToken cancellationToken)
         {
             _client.DefaultRequestHeaders.Add("x-requested-with", "XMLHttpRequest");
-            var response = await _client.GetAsync("/api-frontend/token");
+            var response = await _client.GetAsync("/api-frontend/token", cancellationToken);
             _client.DefaultRequestHeaders.Remove("x-requested-with");
 
             if (response.StatusCode != HttpStatusCode.OK)
@@ -72,7 +72,7 @@ namespace MovieBot.ExternalSources.Kinopoisk
                 return null;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
             var data = JsonConvert.DeserializeObject<TokenResponse>(content);
 
             return data?.Token;

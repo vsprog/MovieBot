@@ -32,19 +32,19 @@ public class CallbackController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Respond([FromBody] JsonElement updates)
+    public async Task<IActionResult> Respond([FromBody] JsonElement updates, CancellationToken cancellationToken)
     {
         var type = updates.GetProperty("type").GetString();
         
         return type switch
         {
             "confirmation" => Ok(_configuration["Config:Confirmation"]),
-            "message_new" => await GetAnswer(updates),
+            "message_new" => await GetAnswer(updates, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };
     }
 
-    private async Task<IActionResult> GetAnswer(JsonElement updates)
+    private async Task<IActionResult> GetAnswer(JsonElement updates, CancellationToken cancellationToken)
     {
         var msgObject = updates.GetProperty("object").GetProperty("message");
         var income = JsonConvert.DeserializeObject<Message>(msgObject.ToString());
@@ -68,7 +68,7 @@ public class CallbackController : Controller
                 break;
             default:
                 var title = income.Text[(income.Text.IndexOf(' ') + 1)..];
-                var movies = await _labService.GetMovies(title);
+                var movies = await _labService.GetMovies(title, cancellationToken);
 
                 if (movies.Count == 0)
                 {
@@ -81,7 +81,7 @@ public class CallbackController : Controller
                     {
                         RandomId = new DateTime().Millisecond, PeerId = income?.PeerId,
                         Message = $"{m.Title} \n {m.Url} \n",
-                        Attachments = await UploadPoster(income?.UserId, m.PosterLink)
+                        Attachments = await UploadPoster(income?.UserId, m.PosterLink, cancellationToken)
                     })
                 )).ToList();
                 break;
@@ -99,7 +99,7 @@ public class CallbackController : Controller
         }
     }
     
-    private async Task<IEnumerable<Photo>> UploadPoster(long? userId, string? link)
+    private async Task<IEnumerable<Photo>> UploadPoster(long? userId, string? link, CancellationToken cancellationToken)
     {
         if (link is null)
         {
@@ -107,7 +107,7 @@ public class CallbackController : Controller
         }
         
         var uploadServer = _vkApi.Photo.GetMessagesUploadServer(userId);
-        var response = await _fileLoader.UploadFile(uploadServer.UploadUrl, link, "jpg");
+        var response = await _fileLoader.UploadFile(uploadServer.UploadUrl, link, "jpg", cancellationToken);
         return _vkApi.Photo.SaveMessagesPhoto(response);
     }
 }

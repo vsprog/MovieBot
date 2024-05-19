@@ -17,7 +17,7 @@ namespace MovieBot.ExternalSources.Yohoho
             _filmResponseProps = typeof(YohohoResponse).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         }
 
-        public async Task<IEnumerable<Frame?>> GetFrames(string movieId)
+        public async Task<IEnumerable<Frame?>> GetFrames(string movieId, CancellationToken cancellationToken)
         {
             var body = JsonConvert.SerializeObject(new
             {
@@ -31,14 +31,14 @@ namespace MovieBot.ExternalSources.Yohoho
                 player = "videocdn,hdvb,bazon,ustore,alloha,kodik,iframe,collaps,pleer",
 
             });
-            var response = await _client.PostAsync(string.Empty, new StringContent(body, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(string.Empty, new StringContent(body, Encoding.UTF8, "application/json"), cancellationToken);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return Enumerable.Empty<Frame>();
             }
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
             var data = JsonConvert.DeserializeObject<YohohoResponse>(content);
             var result = _filmResponseProps
                 .Select(p => p.GetValue(data) as Frame)

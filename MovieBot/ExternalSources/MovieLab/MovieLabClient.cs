@@ -14,16 +14,16 @@ public class MovieLabClient
         _client = client;
     }
 
-    public async Task<IEnumerable<LabFilm?>> GetFilms(string title)
+    public async Task<IEnumerable<LabFilm?>> GetFilms(string title, CancellationToken cancellationToken)
     {
-        var response = await _client.GetAsync($"{Url}{title}");
+        var response = await _client.GetAsync($"{Url}{title}", cancellationToken);
 
         if (response.StatusCode != HttpStatusCode.OK)
         {
             return Enumerable.Empty<LabFilm>();
         }
         
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var data = JsonConvert.DeserializeObject<MovieResponse>(content);
         
         return data!.Films;

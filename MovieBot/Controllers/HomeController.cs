@@ -5,19 +5,12 @@ namespace MovieBot.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly YohohoService _yohohoService;
-        private readonly LabService _labService;
-
-        public HomeController(YohohoService yohohoService, LabService labService)
-        {
-            _yohohoService = yohohoService;
-            _labService = labService;
-        }
-
         [Route("/yohoho/{query}")]
-        public async Task<IActionResult> GetMovieYohoho(string query)
+        public async Task<IActionResult> GetMovieYohoho(string query, 
+            [FromServices] YohohoService yohohoService,
+            CancellationToken cancellationToken)
         {
-            var movies = await _yohohoService.GetMovies(query);
+            var movies = await yohohoService.GetMovies(query, cancellationToken);
             
             return movies.Count == 0 
                 ? NotFound() 
@@ -25,9 +18,11 @@ namespace MovieBot.Controllers
         }
         
         [Route("/lab/{query}")]
-        public async Task<IActionResult> GetMovieLab(string query)
+        public async Task<IActionResult> GetMovieLab(string query, 
+            [FromServices] LabService labService,
+            CancellationToken cancellationToken)
         {
-            var movies = await _labService.GetMovies(query);
+            var movies = await labService.GetMovies(query, cancellationToken);
             
             return movies.Count == 0 
                 ? NotFound() 
