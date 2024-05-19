@@ -38,8 +38,12 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient("telegram_bot_client")
             .AddTypedClient<ITelegramBotClient>((httpClient, serviceProvider) =>
             {
+                httpClient.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+                
                 var tgConfig = serviceProvider.GetConfiguration<TelegramConfiguration>();
                 TelegramBotClientOptions options = new(tgConfig.BotToken);
+                
                 return new TelegramBotClient(options, httpClient);
             });
     }

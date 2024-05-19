@@ -40,8 +40,7 @@ public sealed class ValidateTelegramBotAttribute : TypeFilterAttribute
         private bool IsValidRequest(HttpRequest request)
         {
             var isSecretTokenProvided =
-                request.Headers.TryGetValue("X-Telegram-Bot-Api-Secret-Token"
-                    , out var secretTokenHeader);
+                request.Headers.TryGetValue("X-Telegram-Bot-Api-Secret-Token", out var secretTokenHeader);
             return isSecretTokenProvided &&
                    string.Equals(secretTokenHeader, _secretToken, StringComparison.Ordinal);
         }
