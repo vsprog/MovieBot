@@ -9,13 +9,11 @@ public class TgMessageHandlerService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly LabService _labService;
-    private readonly IServiceProvider _serviceProvider;
 
-    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService, IServiceProvider serviceProvider)
+    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService)
     {
         _botClient = botClient;
         _labService = labService;
-        _serviceProvider = serviceProvider;
     }
 
     public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
@@ -38,12 +36,12 @@ public class TgMessageHandlerService
 
     private async Task OnMessageReceived(Message message, CancellationToken cancellationToken)
     {
-        if (message.Text is not { } messageText)
+        if (string.IsNullOrEmpty(message.Text))
         {
             return;
         }
         
-        var action = messageText.Split(' ')[0] switch
+        var action = message.Text.Split(' ')[0] switch
         {
             "/start" => SendTextMessage(message, "Для поиска напишите: \"/find название_фильма\"", cancellationToken),
             "/find" => SendMoviesResult(message, cancellationToken), 
@@ -56,10 +54,7 @@ public class TgMessageHandlerService
     private async Task SendTextMessage(Message incoming, string text,
         CancellationToken cancellationToken)
     { 
-        using var scope = _serviceProvider.CreateScope();
-        var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
-
-        await botClient.SendTextMessageAsync(
+        await _botClient.SendTextMessageAsync(
             chatId: incoming.Chat.Id,
             text: text,
             cancellationToken: cancellationToken);
@@ -77,12 +72,10 @@ public class TgMessageHandlerService
             await SendTextMessage(incoming, Constants.Answers[rndInd], cancellationToken);
             return;
         }
-        using var scope = _serviceProvider.CreateScope();
-        var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
 
         foreach (var movie in movies)
         {
-            await botClient.SendPhotoAsync(
+            await _botClient.SendPhotoAsync(
                 chatId: incoming.Chat.Id,
                 photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
                 caption: $"Ссылка для просмотра: <br> <a href=\"{movie.Url}\">{movie.Title}</a>",
