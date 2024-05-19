@@ -9,11 +9,13 @@ public class TgMessageHandlerService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly LabService _labService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService)
+    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService, IServiceProvider serviceProvider)
     {
         _botClient = botClient;
         _labService = labService;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
@@ -54,7 +56,10 @@ public class TgMessageHandlerService
     private async Task SendTextMessage(Message incoming, string text,
         CancellationToken cancellationToken)
     { 
-        await _botClient.SendTextMessageAsync(
+        using var scope = _serviceProvider.CreateScope();
+        var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+
+        await botClient.SendTextMessageAsync(
             chatId: incoming.Chat.Id,
             text: text,
             cancellationToken: cancellationToken);
@@ -72,10 +77,12 @@ public class TgMessageHandlerService
             await SendTextMessage(incoming, Constants.Answers[rndInd], cancellationToken);
             return;
         }
+        using var scope = _serviceProvider.CreateScope();
+        var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
 
         foreach (var movie in movies)
         {
-            await _botClient.SendPhotoAsync(
+            await botClient.SendPhotoAsync(
                 chatId: incoming.Chat.Id,
                 photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
                 caption: $"Ссылка для просмотра: <br> <a href=\"{movie.Url}\">{movie.Title}</a>",
