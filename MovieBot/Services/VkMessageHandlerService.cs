@@ -36,7 +36,7 @@ public class VkMessageHandlerService
         return update.Type.ToString() switch
         {
             "confirmation" => _configuration["Config:Confirmation"],
-            "message_new" => throw new ArgumentOutOfRangeException(update.ToString()), //await HandleMessageAsync(update.Message, cancellationToken),
+            "message_new" => throw new Exception($"{update.Message?.PeerId} {update.Message?.Text}"), //await HandleMessageAsync(update.Message, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };
     }
