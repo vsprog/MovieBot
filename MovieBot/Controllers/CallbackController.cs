@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBot.Services;
-using VkNet.Model.GroupUpdate;
+using MovieBot.Services.Models;
 
 namespace MovieBot.Controllers;
 
@@ -8,7 +8,7 @@ public class CallbackController : Controller
 {
     [HttpPost]
     public async Task<IActionResult> Respond(
-        [FromBody] GroupUpdate updates, 
+        [FromBody] VkUpdates updates, 
         [FromServices] VkMessageHandlerService handlerService,
         CancellationToken cancellationToken)
     {
