@@ -1,10 +1,8 @@
 using MovieBot.ExternalSources;
 using MovieBot.Infractructure;
 using VkNet.Abstractions;
+using VkNet.Enums.StringEnums;
 using VkNet.Model;
-using VkNet.Model.Attachments;
-using VkNet.Model.GroupUpdate;
-using VkNet.Model.RequestParams;
 
 namespace MovieBot.Services;
 
@@ -33,10 +31,10 @@ public class VkMessageHandlerService
 
     public async Task<string> HandleUpdateAsync(GroupUpdate update, CancellationToken cancellationToken)
     {
-        return update.Type.ToString() switch
+        return update.Type.Value switch
         {
-            "confirmation" => _configuration["Config:Confirmation"],
-            "message_new" => await HandleMessageAsync(update.Message, cancellationToken),
+            GroupUpdateType.Confirmation => _configuration["Config:Confirmation"],
+            GroupUpdateType.MessageNew => await HandleMessageAsync(((MessageNew)update.Instance).Message, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBot.Services;
-using VkNet.Model.GroupUpdate;
+using VkNet.Model;
+using static VkNet.Model.GroupUpdate;
 
 namespace MovieBot.Controllers;
 
