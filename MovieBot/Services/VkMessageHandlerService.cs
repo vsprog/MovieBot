@@ -36,13 +36,14 @@ public class VkMessageHandlerService
         return update.Type.ToString() switch
         {
             "confirmation" => _configuration["Config:Confirmation"],
-            "message_new" => await HandleMessageAsync(update.Message, cancellationToken),
+            "message_new" => await HandleMessageAsync(update.MessageNew, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };
     }
 
-    private async Task<string> HandleMessageAsync(Message? incoming, CancellationToken cancellationToken)
+    private async Task<string> HandleMessageAsync(MessageNew? newMessage, CancellationToken cancellationToken)
     {
+        var incoming = newMessage?.Message;
         var random = new Random();
         var rndInd = random.Next(0, Constants.Answers.Length);
         var messages = new List<MessagesSendParams>
@@ -51,6 +52,7 @@ public class VkMessageHandlerService
             {
                 RandomId = new DateTime().Millisecond,
                 PeerId = incoming?.PeerId,
+                UserId = incoming?.UserId,
                 Message = string.Empty
             }
         };
