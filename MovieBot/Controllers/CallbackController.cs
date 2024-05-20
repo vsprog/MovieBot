@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieBot.Services;
+using VkNet.Model.GroupUpdate;
 
 namespace MovieBot.Controllers;
 
@@ -8,7 +8,7 @@ public class CallbackController : Controller
 {
     [HttpPost]
     public async Task<IActionResult> Respond(
-        [FromBody] JsonElement updates, 
+        [FromBody] GroupUpdate updates, 
         [FromServices] VkMessageHandlerService handlerService,
         CancellationToken cancellationToken)
     {
