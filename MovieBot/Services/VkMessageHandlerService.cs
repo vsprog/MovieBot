@@ -36,12 +36,12 @@ public class VkMessageHandlerService
         return update.Type.ToString() switch
         {
             "confirmation" => _configuration["Config:Confirmation"],
-            "message_new" => await HandleMessageAsync(update.Message, cancellationToken),
+            "message_new" => await HandleMessageAsync(update.Message!, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };
     }
 
-    private async Task<string> HandleMessageAsync(Message? incoming, CancellationToken cancellationToken)
+    private async Task<string> HandleMessageAsync(Message incoming, CancellationToken cancellationToken)
     {
         var random = new Random();
         var rndInd = random.Next(0, Constants.Answers.Length);
