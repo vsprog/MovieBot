@@ -1,10 +1,9 @@
 using MovieBot.ExternalSources;
 using MovieBot.Infractructure;
-using MovieBot.Services.Models;
-using Newtonsoft.Json;
 using VkNet.Abstractions;
 using VkNet.Model;
 using VkNet.Model.Attachments;
+using VkNet.Model.GroupUpdate;
 using VkNet.Model.RequestParams;
 
 namespace MovieBot.Services;
@@ -32,12 +31,12 @@ public class VkMessageHandlerService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<string> HandleUpdateAsync(VkUpdates update, CancellationToken cancellationToken)
+    public async Task<string> HandleUpdateAsync(GroupUpdate update, CancellationToken cancellationToken)
     {
-        return update.Type switch
+        return update.Type.ToString() switch
         {
             "confirmation" => _configuration["Config:Confirmation"],
-            "message_new" => await HandleMessageAsync(JsonConvert.DeserializeObject<Message>(update.Object["message"].ToString()), cancellationToken),
+            "message_new" => throw new ArgumentOutOfRangeException($"update type: {update.Type}, update message: {update.Message?.Text}, update message body: {update.Message?.Body}, update newmessage body: {update.MessageNew?.Message?.Body}"), // await HandleMessageAsync(update.Message, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };
     }
