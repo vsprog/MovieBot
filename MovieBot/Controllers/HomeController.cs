@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MovieBot.ExternalSources.Llm;
 using MovieBot.Services;
 
 namespace MovieBot.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
         [Route("/yohoho/{query}")]
         public async Task<IActionResult> GetMovieYohoho(string query, 
             [FromServices] YohohoService yohohoService,
@@ -17,6 +19,7 @@ namespace MovieBot.Controllers
                 : Ok(movies);
         }
         
+        [HttpGet]
         [Route("/lab/{query}")]
         public async Task<IActionResult> GetMovieLab(string query, 
             [FromServices] LabService labService,
@@ -27,6 +30,15 @@ namespace MovieBot.Controllers
             return movies.Count == 0 
                 ? NotFound() 
                 : Ok(movies);
+        }
+        
+        [HttpGet]
+        [Route("/llm/{query}")]
+        public async Task<IActionResult> GetLlmAnswer(string query, 
+            [FromServices] LlmApi llmApi,
+            CancellationToken cancellationToken)
+        {
+            return Ok(await llmApi.GetAnswer(query, cancellationToken));
         }
     }
 }

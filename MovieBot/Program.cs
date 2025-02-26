@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using MovieBot.Infractructure;
 using MovieBot.Services;
 using VkNet;
@@ -11,6 +12,15 @@ builder.Services.Configure<TelegramConfiguration>(botConfigurationSection);
 var llmConfiguration = builder.Configuration.GetSection(LlmConfiguration.Configuration);
 builder.Services.Configure<LlmConfiguration>(llmConfiguration);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "API",
+    });
+});
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
 builder.Services.AddScoped<LabService>();
@@ -23,7 +33,7 @@ builder.Services.AddSingleton<IVkApi>(_ =>
     return api;
 });
 
-builder.Services.AddHostedService<ConfigureWebhook>();
+//builder.Services.AddHostedService<ConfigureWebhook>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services
@@ -31,6 +41,12 @@ builder.Services
     .AddNewtonsoftJson();
 
 var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;
+});
 app.UseRouting();
 app.MapControllerRoute(
     name: "default",

@@ -18,7 +18,7 @@ public class LlmApi
 
     public async Task<string> GetAnswer(string message, CancellationToken cancellationToken)
     {
-        var response = await _client.PostAsJsonAsync("/", new LlmRequest
+        var response = await _client.PostAsJsonAsync("", new LlmRequest
         {
             Model = _llmConfig.Model,
             Messages = new[] { new LlmMessage("user", message) }

@@ -48,12 +48,18 @@ public class TgMessageHandlerService
         {
             "/start" => SendTextMessage(message, "Для просмотра фильма напишите: \"/find название_фильма\".\nДля общения напишите запрос в произвольной форме", cancellationToken),
             "/find" => SendMoviesResult(message, cancellationToken), 
-            _ => _llmApi.GetAnswer(message.Text, cancellationToken)
+            _ => SendLlmMessage(message, cancellationToken)
         };
         
         await action;
     }
 
+    private async Task SendLlmMessage(Message incoming, CancellationToken cancellationToken)
+    {
+        var answer = await _llmApi.GetAnswer(incoming.Text!, cancellationToken);
+        await SendTextMessage(incoming, answer, cancellationToken);
+    }
+    
     private async Task SendTextMessage(Message incoming, string text,
         CancellationToken cancellationToken)
     { 
