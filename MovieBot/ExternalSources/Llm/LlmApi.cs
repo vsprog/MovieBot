@@ -30,6 +30,12 @@ public class LlmApi
         }
         
         var content = await response.Content.ReadFromJsonAsync<LlmResponse>(cancellationToken: cancellationToken);
-        return content!.Choices[0].LlmMessage.Content;
+
+        if (content is null || content.Choices.Length == 0)
+        {
+            return await response.Content.ReadAsStringAsync(cancellationToken);
+        }
+        
+        return content.Choices[0].LlmMessage.Content;
     }
 }
