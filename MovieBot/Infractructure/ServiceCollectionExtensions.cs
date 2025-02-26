@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using MovieBot.ExternalSources;
 using MovieBot.ExternalSources.Kinopoisk;
+using MovieBot.ExternalSources.Llm;
 using MovieBot.ExternalSources.MovieLab;
 using MovieBot.ExternalSources.Yohoho;
 using Telegram.Bot;
@@ -46,6 +47,15 @@ public static class ServiceCollectionExtensions
                 
                 return new TelegramBotClient(options, httpClient);
             });
+
+        services.AddHttpClient<LlmApi>(client =>
+        {
+            client.BaseAddress = new Uri(config["Llm:Provider"]);
+            client.DefaultRequestHeaders.Authorization = 
+                new AuthenticationHeaderValue("Bearer", config["Llm:ApiKey"]);
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+        });
     }
 
     private static void AddConfiguredClient<TClient>(this IServiceCollection services, 

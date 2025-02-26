@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var botConfigurationSection = builder.Configuration.GetSection(TelegramConfiguration.Configuration);
 builder.Services.Configure<TelegramConfiguration>(botConfigurationSection);
+var llmConfiguration = builder.Configuration.GetSection(LlmConfiguration.Configuration);
+builder.Services.Configure<LlmConfiguration>(llmConfiguration);
 
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();

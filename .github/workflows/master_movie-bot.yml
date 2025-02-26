@@ -43,6 +43,9 @@ jobs:
           Telegram.HostAddress: ${{ secrets.TELEGRAM_HOST }}
           Telegram.BotToken: ${{ secrets.TELEGRAM_TOKEN }}
           Telegram.SecretToken: ${{ secrets.TELEGRAM_SECRET }}
+          Llm.Model: ${{ secrets.LLM_MODEL }}
+          Llm.ApiKey: ${{ secrets.LLM_API_KEY }}
+          Llm.Provider: ${{ secrets.LLM_PROVIDER }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

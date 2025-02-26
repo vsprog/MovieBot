@@ -2,6 +2,8 @@
 {
     public static class Constants
     {
+        public static string DefaultLlmAnswer = "повторите запрос";
+        
         public static readonly string[] Answers = { 
             "Одна ошибка - и ты ошибся",
             "Проснись, Нео. Ты ошибся.", 

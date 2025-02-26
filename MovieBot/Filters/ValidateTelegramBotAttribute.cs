@@ -30,7 +30,7 @@ public sealed class ValidateTelegramBotAttribute : TypeFilterAttribute
         {
             if (!IsValidRequest(context.HttpContext.Request))
             {
-                context.Result = new ObjectResult("\"X-Telegram-Bot-Api-Secret-Token\" is invalid")
+                context.Result = new ObjectResult("`X-Telegram-Bot-Api-Secret-Token` is invalid")
                 {
                     StatusCode = 403
                 };

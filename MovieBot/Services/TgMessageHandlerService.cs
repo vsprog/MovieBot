@@ -1,3 +1,4 @@
+using MovieBot.ExternalSources.Llm;
 using MovieBot.Infractructure;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -9,11 +10,13 @@ public class TgMessageHandlerService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly LabService _labService;
+    private readonly LlmApi _llmApi;
 
-    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService)
+    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService, LlmApi llmApi)
     {
         _botClient = botClient;
         _labService = labService;
+        _llmApi = llmApi;
     }
 
     public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
@@ -43,9 +46,9 @@ public class TgMessageHandlerService
         
         var action = message.Text.Split(' ')[0] switch
         {
-            "/start" => SendTextMessage(message, "Для поиска напишите: \"/find название_фильма\"", cancellationToken),
+            "/start" => SendTextMessage(message, "Для просмотра фильма напишите: \"/find название_фильма\".\nДля общения напишите запрос в произвольной форме", cancellationToken),
             "/find" => SendMoviesResult(message, cancellationToken), 
-            _ => SendTextMessage(message, "Для поиска желаемого фильма напишите: \"/find название_фильма\"", cancellationToken)
+            _ => _llmApi.GetAnswer(message.Text, cancellationToken)
         };
         
         await action;
@@ -60,10 +63,9 @@ public class TgMessageHandlerService
             cancellationToken: cancellationToken);
     }
 
-    private async Task SendMoviesResult(Message incoming,
-        CancellationToken cancellationToken)
+    private async Task SendMoviesResult(Message incoming, CancellationToken cancellationToken)
     {
-        var title = incoming.Text[(incoming.Text.IndexOf(' ') + 1)..];
+        var title = incoming.Text![(incoming.Text.IndexOf(' ') + 1)..];
         var movies = await _labService.GetMovies(title, cancellationToken);
 
         if (movies.Count == 0)

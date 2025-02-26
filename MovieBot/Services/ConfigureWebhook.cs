@@ -17,6 +17,7 @@ public class ConfigureWebhook : IHostedService
         _serviceProvider = serviceProvider;
         _botConfig = botOptions.Value;
     }
+    
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = _serviceProvider.CreateScope();
