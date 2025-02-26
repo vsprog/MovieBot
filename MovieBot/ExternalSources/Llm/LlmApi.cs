@@ -17,7 +17,7 @@ public class LlmApi
         _llmConfig = llmOptions.Value;
     }
 
-    public async Task<string> GetAnswer(string message, CancellationToken cancellationToken)
+    public async Task<IEnumerable<string>> GetAnswer(string message, CancellationToken cancellationToken)
     {
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
         {
@@ -27,12 +27,12 @@ public class LlmApi
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            return Constants.DefaultLlmAnswer;
+            return new[]{ Constants.DefaultLlmAnswer};
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var data = JsonConvert.DeserializeObject<LlmResponse>(content);
         
-        return data!.Choices[0].LlmMessage.Content;
+        return data!.Choices.Select(c => c.LlmMessage.Content);
     }
 }
