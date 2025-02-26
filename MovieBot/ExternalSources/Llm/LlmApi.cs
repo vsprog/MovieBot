@@ -29,13 +29,8 @@ public class LlmApi
             return Constants.DefaultLlmAnswer;
         }
         
-        var content = await response.Content.ReadFromJsonAsync<LlmResponse>(cancellationToken: cancellationToken);
+        //var content = await response.Content.ReadFromJsonAsync<LlmResponse>(cancellationToken: cancellationToken);
 
-        if (content is null || content.Choices.Length == 0)
-        {
-            return await response.Content.ReadAsStringAsync(cancellationToken);
-        }
-        
-        return content.Choices[0].LlmMessage.Content;
+        return await response.Content.ReadAsStringAsync(cancellationToken);
     }
 }
