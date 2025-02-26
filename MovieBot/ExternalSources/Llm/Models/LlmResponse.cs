@@ -8,5 +8,5 @@ public class LlmResponse
 public class Choice
 {
     public int Index { get; set; }
-    public LlmMessage LlmMessage { get; set; } = null!;
+    public LlmMessage Message { get; set; } = null!;
 }
