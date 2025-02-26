@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.Extensions.Options;
 using MovieBot.ExternalSources.Llm.Models;
 using MovieBot.Infractructure;
+using Newtonsoft.Json;
 
 namespace MovieBot.ExternalSources.Llm;
 
@@ -29,8 +30,9 @@ public class LlmApi
             return Constants.DefaultLlmAnswer;
         }
         
-        //var content = await response.Content.ReadFromJsonAsync<LlmResponse>(cancellationToken: cancellationToken);
-
-        return await response.Content.ReadAsStringAsync(cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var data = JsonConvert.DeserializeObject<LlmResponse>(content);
+        
+        return data!.Choices[0].LlmMessage.Content;
     }
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using MovieBot.ExternalSources.MovieLab.Models;
+using Newtonsoft.Json;
 
 namespace MovieBot.ExternalSources.MovieLab;
 
@@ -22,7 +23,9 @@ public class MovieLabClient
             return Enumerable.Empty<LabFilm>();
         }
         
-        var content = await response.Content.ReadFromJsonAsync<MovieResponse>(cancellationToken: cancellationToken);
-        return content!.Films;
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var data = JsonConvert.DeserializeObject<MovieResponse>(content);
+        
+        return data!.Films;
     }
 }

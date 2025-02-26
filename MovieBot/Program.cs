@@ -41,7 +41,6 @@ builder.Services
     .AddNewtonsoftJson();
 
 var app = builder.Build();
-app.UseDeveloperExceptionPage();
 app.UseSwagger();
 app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
 {
