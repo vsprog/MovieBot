@@ -32,7 +32,7 @@ public class LlmApi
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var data = JsonConvert.DeserializeObject<LlmResponse>(content);
-        
-        return data!.Choices.Select(c => c.LlmMessage.Content);
+
+        return new[]{ content}; //data!.Choices.Select(c => c.LlmMessage.Content);
     }
 }
