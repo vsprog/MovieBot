@@ -33,7 +33,7 @@ builder.Services.AddSingleton<IVkApi>(_ =>
     return api;
 });
 
-//builder.Services.AddHostedService<ConfigureWebhook>();
+builder.Services.AddHostedService<ConfigureWebhook>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services
