@@ -40,13 +40,6 @@ builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddHttpContextAccessor();
 builder.Services
     .AddControllers()
-    .AddJsonOptions(config =>
-    {
-        config.JsonSerializerOptions.Converters.Add(
-            new JsonStringEnumConverter(
-                namingPolicy: JsonNamingPolicy.CamelCase,
-                allowIntegerValues: false));
-    })
     .AddNewtonsoftJson();
 
 var app = builder.Build();
