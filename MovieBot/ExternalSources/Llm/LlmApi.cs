@@ -25,6 +25,7 @@ public class LlmApi
         {
             Model = _llmConfig.Model,
             Temperature = 1,
+            Top = 1,
             Stream = _isStream,
             Messages = new[] { new LlmMessage("user", message) }
         }, cancellationToken);
