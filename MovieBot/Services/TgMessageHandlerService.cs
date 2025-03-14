@@ -56,7 +56,7 @@ public class TgMessageHandlerService
 
     private async Task SendLlmMessage(Message incoming, CancellationToken cancellationToken)
     {
-        var answers = await _llmApi.GetAnswer(incoming.Text!, cancellationToken);
+        var answers = await _llmApi.GetAnswer(incoming.Chat.Id.ToString(), incoming.Text!, cancellationToken);
 
         foreach (var answer in answers)
         {

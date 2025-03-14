@@ -42,6 +42,8 @@ builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
 
+builder.Services.AddSingleton<MessageHistoryService>();
+
 var app = builder.Build();
 app.UseDeveloperExceptionPage();
 app.UseSwagger();

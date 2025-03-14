@@ -38,7 +38,7 @@ namespace MovieBot.Controllers
             [FromServices] LlmApi llmApi,
             CancellationToken cancellationToken)
         {
-            return Ok(await llmApi.GetAnswer(query, cancellationToken));
+            return Ok(await llmApi.GetAnswer(Environment.UserName, query, cancellationToken));
         }
     }
 }
