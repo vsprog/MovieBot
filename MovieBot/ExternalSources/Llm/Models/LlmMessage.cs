@@ -10,7 +10,6 @@ public class LlmMessage
         Content = content;
     }
     
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public LlmRole Role { get; set; }
     public string Content { get; set; }
 }
@@ -18,6 +17,8 @@ public class LlmMessage
 
 public enum LlmRole
 {
+    [JsonPropertyName("user")]
     User,
+    [JsonPropertyName("assistant")]
     Assistant
 }

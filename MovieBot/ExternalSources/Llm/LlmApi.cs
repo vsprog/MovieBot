@@ -28,12 +28,6 @@ public class LlmApi
         //     Temperature = 1,
         //     Messages = _previousMessages
         // });
-        var json = JsonConvert.SerializeObject(new LlmRequest
-        {
-            Model = _llmConfig.Model,
-            Temperature = 1,
-            Messages = _previousMessages
-        });
 
         //var response = await _client.PostAsync(string.Empty, new StringContent(json), cancellationToken);
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
@@ -46,13 +40,11 @@ public class LlmApi
         if (response.StatusCode != HttpStatusCode.OK)
         {
             //Constants.DefaultLlmAnswer
-            return new[]{ json, response.StatusCode.ToString(), response.RequestMessage?.ToString() ?? "" };
+            return new[]{  response.StatusCode.ToString(), response.RequestMessage?.Content?.ToString() ?? "" };
         }
         
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        var data = JsonConvert.DeserializeObject<LlmResponse>(content);
-
-        var answers =  data!.Choices.Select(c => c.Message.Content).ToList();
+        var content = await response.Content.ReadFromJsonAsync<LlmResponse>(cancellationToken: cancellationToken);
+        var answers =  content!.Choices.Select(c => c.Message.Content).ToList();
 
         _previousMessages.AddRange(answers.Select(a => new LlmMessage(LlmRole.Assistant, a)));
         
