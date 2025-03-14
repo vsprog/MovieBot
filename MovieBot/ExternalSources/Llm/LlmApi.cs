@@ -36,11 +36,10 @@ public class LlmApi
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return new[]{content};
-        // var data = JsonConvert.DeserializeObject<LlmResponse>(content);
-        //
-        // return data!.Choices.Select(c => _isStream 
-        //     ? c.Delta?.Content ?? string.Empty
-        //     : c.Message.Content);
+        var data = JsonConvert.DeserializeObject<LlmResponse>(content);
+
+        return data!.Choices.Select(c => _isStream 
+            ? c.Delta?.Content ?? string.Empty
+            : c.Message.Content);
     }
 }
