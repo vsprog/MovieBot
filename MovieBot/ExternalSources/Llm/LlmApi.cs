@@ -21,12 +21,14 @@ public class LlmApi
     public async Task<IEnumerable<string>> GetAnswer(string message, CancellationToken cancellationToken)
     {
         _previousMessages.Add(new LlmMessage(LlmRole.User, message));
-       
-        var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
+        
+        var json = JsonConvert.SerializeObject(new LlmRequest
         {
             Model = _llmConfig.Model,
             Messages = _previousMessages
-        }, cancellationToken);
+        });
+        
+        var response = await _client.PostAsync(string.Empty, new StringContent(json), cancellationToken);
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
