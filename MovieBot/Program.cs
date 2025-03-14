@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using MovieBot.Infractructure;
 using MovieBot.Services;
@@ -38,6 +39,10 @@ builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddHttpContextAccessor();
 builder.Services
     .AddControllers()
+    .AddJsonOptions(config =>
+    {
+        config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    })
     .AddNewtonsoftJson();
 
 var app = builder.Build();
