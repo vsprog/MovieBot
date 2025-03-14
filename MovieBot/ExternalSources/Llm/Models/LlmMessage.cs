@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace MovieBot.ExternalSources.Llm.Models;
 
 public class LlmMessage
@@ -17,8 +15,6 @@ public class LlmMessage
 
 public enum LlmRole
 {
-    [JsonPropertyName("user")]
     User,
-    [JsonPropertyName("assistant")]
     Assistant
 }
