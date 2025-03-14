@@ -25,13 +25,12 @@ public class LlmApi
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
         {
             Model = _llmConfig.Model,
-            Messages = _previousMessages
+            Messages = _previousMessages.ToArray()
         }, cancellationToken);
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            //Constants.DefaultLlmAnswer
-            return new[]{ response.StatusCode.ToString(), response.RequestMessage?.ToString() ?? "" };
+            return new[]{ Constants.DefaultLlmAnswer };
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
