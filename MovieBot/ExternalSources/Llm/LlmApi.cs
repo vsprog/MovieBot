@@ -20,7 +20,7 @@ public class LlmApi
 
     public async Task<IEnumerable<string>> GetAnswer(string message, CancellationToken cancellationToken)
     {
-        _previousMessages.Add(new LlmMessage(LlmRole.User, message));
+        _previousMessages.Insert(0, new LlmMessage(LlmRole.User, message));
         
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
         {
@@ -37,8 +37,11 @@ public class LlmApi
         var data = JsonConvert.DeserializeObject<LlmResponse>(content);
 
         var answers =  data!.Choices.Select(c => c.Message.Content).ToList();
-        
-        _previousMessages.AddRange(answers.Select(a => new LlmMessage(LlmRole.Assistant, a))); 
+
+        foreach (var ans in answers.Select(a => new LlmMessage(LlmRole.Assistant, a)))
+        {
+            _previousMessages.Insert(0, ans);
+        } 
         
         return answers;
     }

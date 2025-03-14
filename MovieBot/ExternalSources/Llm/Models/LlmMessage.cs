@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Newtonsoft.Json.Converters;
 
 namespace MovieBot.ExternalSources.Llm.Models;
 
@@ -12,7 +11,7 @@ public class LlmMessage
     }
     
     
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public LlmRole Role { get; set; }
     public string Content { get; set; }
 }
