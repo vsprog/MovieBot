@@ -10,6 +10,7 @@ public class LlmApi
 {
     private readonly HttpClient _client;
     private readonly LlmConfiguration _llmConfig;
+    private readonly List<LlmMessage> _previousMessages = new();
     
     public LlmApi(HttpClient client, IOptions<LlmConfiguration> llmOptions)
     {
@@ -19,10 +20,12 @@ public class LlmApi
 
     public async Task<IEnumerable<string>> GetAnswer(string message, CancellationToken cancellationToken)
     {
+        _previousMessages.Add(new LlmMessage(LlmRole.User, message));
+        
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
         {
             Model = _llmConfig.Model,
-            Messages = new[] { new LlmMessage("user", message) }
+            Messages = _previousMessages
         }, cancellationToken);
         
         if (response.StatusCode != HttpStatusCode.OK)
@@ -33,6 +36,10 @@ public class LlmApi
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var data = JsonConvert.DeserializeObject<LlmResponse>(content);
 
-        return data!.Choices.Select(c => c.Message.Content);
+        var answers =  data!.Choices.Select(c => c.Message.Content).ToList();
+        
+        _previousMessages.AddRange(answers.Select(a => new LlmMessage(LlmRole.Assistant, a))); 
+        
+        return answers;
     }
 }
