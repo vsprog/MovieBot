@@ -22,14 +22,12 @@ public class LlmApi
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
         {
             Model = _llmConfig.Model,
-            Temperature = 1,
-            Stream = true,
             Messages = new[] { new LlmMessage("user", message) }
         }, cancellationToken);
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            return new[]{ Constants.DefaultLlmAnswer };
+            return new[]{ Constants.DefaultLlmAnswer};
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);

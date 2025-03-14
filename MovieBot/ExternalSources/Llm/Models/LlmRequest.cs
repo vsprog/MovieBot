@@ -4,9 +4,5 @@ public class LlmRequest
 {
     public string Model { get; set; } = null!;
     
-    public int? Temperature { get; set; }
-    
-    public bool? Stream { get; set; }
-    
     public LlmMessage[] Messages { get; set; } = null!;
 }
