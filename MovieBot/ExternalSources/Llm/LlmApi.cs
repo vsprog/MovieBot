@@ -10,11 +10,13 @@ public class LlmApi
 {
     private readonly HttpClient _client;
     private readonly LlmConfiguration _llmConfig;
+    private readonly bool _isStream;
     
     public LlmApi(HttpClient client, IOptions<LlmConfiguration> llmOptions)
     {
         _client = client;
         _llmConfig = llmOptions.Value;
+        _isStream = true;
     }
 
     public async Task<IEnumerable<string>> GetAnswer(string message, CancellationToken cancellationToken)
@@ -23,7 +25,7 @@ public class LlmApi
         {
             Model = _llmConfig.Model,
             Temperature = 1,
-            Stream = true,
+            Stream = _isStream,
             Messages = new[] { new LlmMessage("user", message) }
         }, cancellationToken);
         
@@ -35,6 +37,8 @@ public class LlmApi
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var data = JsonConvert.DeserializeObject<LlmResponse>(content);
 
-        return data!.Choices.Select(c => c.Message.Content);
+        return data!.Choices.Select(c => _isStream 
+            ? c.Delta?.Content ?? string.Empty
+            : c.Message.Content);
     }
 }
