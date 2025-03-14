@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using MovieBot.Infractructure;
@@ -41,7 +42,10 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(config =>
     {
-        config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        config.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(
+                namingPolicy: JsonNamingPolicy.CamelCase,
+                allowIntegerValues: false));
     })
     .AddNewtonsoftJson();
 
