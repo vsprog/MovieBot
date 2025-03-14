@@ -32,7 +32,8 @@ public class LlmApi
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            return new[]{ Constants.DefaultLlmAnswer };
+            //Constants.DefaultLlmAnswer
+            return new[]{ json, response.StatusCode.ToString() };
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
