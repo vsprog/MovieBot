@@ -28,19 +28,20 @@ public class LlmApi
         //     Temperature = 1,
         //     Messages = _previousMessages
         // });
-        
-        //var response = await _client.PostAsync(string.Empty, new StringContent(json), cancellationToken);
-        var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
+        var json = JsonConvert.SerializeObject(new LlmRequest
         {
             Model = _llmConfig.Model,
             Temperature = 1,
             Messages = _previousMessages
-        }, cancellationToken);
+        });
+
+        //var response = await _client.PostAsync(string.Empty, new StringContent(json), cancellationToken);
+        var response = await _client.PostAsJsonAsync(string.Empty, json, cancellationToken);
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
             //Constants.DefaultLlmAnswer
-            return new[]{  response.StatusCode.ToString(), response.RequestMessage?.ToString() ?? "" };
+            return new[]{ json, response.StatusCode.ToString(), response.RequestMessage?.ToString() ?? "" };
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
