@@ -5,6 +5,7 @@ namespace MovieBot.Services;
 
 public class MessageHistoryService
 {
+    private readonly int _capacity = 20;
     private readonly ConcurrentDictionary<string, List<LlmMessage>> _messageHistory = new();
 
     public void AddMessages(string chatId, List<LlmMessage> messages)
@@ -13,9 +14,9 @@ public class MessageHistoryService
            (_, oldList) =>
             {
                 oldList.AddRange(messages);
-                if (oldList.Count > 50)
+                if (oldList.Count > _capacity)
                 {
-                    oldList.RemoveRange(0, oldList.Count - 50);
+                    oldList.RemoveRange(0, oldList.Count - _capacity);
                 }
                 return oldList;
             });
