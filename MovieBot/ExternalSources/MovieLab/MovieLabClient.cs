@@ -20,20 +20,7 @@ public class MovieLabClient
 
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            //return Enumerable.Empty<LabFilm>();
-            return new[]
-            {
-                new LabFilm
-                {
-                    Player = new LabPlayer
-                    {
-                        Url = "",
-                        Translate = ""
-                    },
-                    TitleEn = response.StatusCode.ToString(),
-                    PosterUrl = response.RequestMessage?.ToString() ?? ""
-                }
-            };
+            return Enumerable.Empty<LabFilm>();
         }
         
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
