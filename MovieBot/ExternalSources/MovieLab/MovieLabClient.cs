@@ -25,8 +25,13 @@ public class MovieLabClient
             {
                 new LabFilm
                 {
+                    Player = new LabPlayer
+                    {
+                        Url = "",
+                        Translate = ""
+                    },
                     TitleEn = response.StatusCode.ToString(),
-                    Description = response.RequestMessage?.ToString() ?? ""
+                    PosterUrl = response.RequestMessage?.ToString() ?? ""
                 }
             };
         }
