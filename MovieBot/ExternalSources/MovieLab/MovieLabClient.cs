@@ -7,7 +7,7 @@ namespace MovieBot.ExternalSources.MovieLab;
 public class MovieLabClient
 {
     private readonly HttpClient _client;
-    private const string Url = "/api/v1/search/movies?page=1&limit=100&title=";
+    private const string Url = "/api/v1/new-search/movies?page=1&limit=100&title=";
 
     public MovieLabClient(HttpClient client)
     {
