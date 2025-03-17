@@ -36,6 +36,8 @@ jobs:
         env:
           ContentSources.Kinopoisk: ${{ secrets.MOVIE_BOT_SEARCHER }}
           ContentSources.Lab: ${{ secrets.MOVIE_BOT_LAB }}
+          ContentSources.LabReferer: ${{ secrets.MOVIE_BOT_LAB_REFERER }}
+          ContentSources.LabOrigin: ${{ secrets.MOVIE_BOT_LAB_ORIGIN }}
           ContentSources.Yohoho: ${{ secrets.MOVIE_BOT_YOHOHO }}
           ContentSources.YohoReferer: ${{ secrets.MOVIE_BOT_REFERER }}
           Config.AccessToken: ${{ secrets.MOVIE_BOT_ACCESS_TOKEN }}
