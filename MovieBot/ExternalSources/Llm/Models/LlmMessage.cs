@@ -16,5 +16,6 @@ public class LlmMessage
 public enum LlmRole
 {
     User,
-    Assistant
+    Assistant,
+    System // for prompts
 }
