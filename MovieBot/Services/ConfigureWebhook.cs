@@ -5,7 +5,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace MovieBot.Services;
 
-public class ConfigureWebhook : IHostedService
+public class ConfigureWebhook : BackgroundService
 { 
     private readonly IServiceProvider _serviceProvider;
     private readonly TelegramConfiguration _botConfig;
@@ -18,7 +18,7 @@ public class ConfigureWebhook : IHostedService
         _botConfig = botOptions.Value;
     }
     
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
         var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
@@ -31,14 +31,6 @@ public class ConfigureWebhook : IHostedService
                 UpdateType.EditedMessage
             },
             secretToken: _botConfig.SecretToken,
-            cancellationToken: cancellationToken);
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
-
-        await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            cancellationToken: stoppingToken);
     }
 }

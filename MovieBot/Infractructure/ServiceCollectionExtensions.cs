@@ -29,9 +29,10 @@ public static class ServiceCollectionExtensions
         services.AddConfiguredClient<MovieLabClient>(client =>
         {
             client.BaseAddress = new Uri(config["ContentSources:Lab"]);
-            client.DefaultRequestHeaders.Add("Server", "cloudflare");
+            client.DefaultRequestHeaders.Add("referer", config["ContentSources:LabReferer"]);
+            client.DefaultRequestHeaders.Add("Origin", config["ContentSources:LabOrigin"]);
             client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+                new MediaTypeWithQualityHeaderValue("*/*"));
         });
         
         services.AddHttpClient<FileLoader>();
