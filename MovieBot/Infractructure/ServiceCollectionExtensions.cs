@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
             client.BaseAddress = new Uri(config["ContentSources:Lab"]);
             client.DefaultRequestHeaders.Add("referer", config["ContentSources:LabReferer"]);
             client.DefaultRequestHeaders.Add("Origin", config["ContentSources:LabOrigin"]);
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36");
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("*/*"));
         });
