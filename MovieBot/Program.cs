@@ -1,5 +1,4 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Reflection;
 using Microsoft.OpenApi.Models;
 using MovieBot.Infractructure;
 using MovieBot.Services;
@@ -20,8 +19,10 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "API",
+        Title = "MovieBot api",
     });
+    options.IncludeXmlComments(Assembly.GetExecutingAssembly());
+    options.CustomSchemaIds(type => type.FullName);
 });
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
@@ -48,10 +49,10 @@ builder.Services.AddSingleton<MessageHistoryService>();
 var app = builder.Build();
 app.UseDeveloperExceptionPage();
 app.UseSwagger();
-app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = string.Empty;
+    options.RoutePrefix = "swagger";
 });
 app.UseRouting();
 app.MapControllerRoute(
