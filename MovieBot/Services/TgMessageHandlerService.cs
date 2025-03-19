@@ -73,35 +73,34 @@ public class TgMessageHandlerService
 
     private async Task SendMoviesResult(Message incoming, CancellationToken cancellationToken)
     {
-        var title = incoming.Text![(incoming.Text.IndexOf(' ') + 1)..];
-
-        await SendTextMessage(incoming.Chat.Id, $"название: {title}", cancellationToken);
-        // if (string.IsNullOrEmpty(title))
-        // {
-        //     await SendTextMessage(incoming.Chat.Id, "пропущено \"название_фильма\"", cancellationToken);
-        // }
-        //
-        // var movies = await _labService.GetMovies(title, cancellationToken);
-        //
-        // if (movies.Count == 0)
-        // {
-        //     var rndInd = new Random().Next(0, Constants.Answers.Length);
-        //     await SendTextMessage(incoming.Chat.Id, Constants.Answers[rndInd], cancellationToken);
-        //     return;
-        // }
-        //
-        // foreach (var movie in movies)
-        // {
-        //     await _botClient.SendPhotoAsync(
-        //         chatId: incoming.Chat.Id,
-        //         photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
-        //         caption: $"Ссылка для просмотра: <a href=" +
-        //                  $"\"{_httpContextAccessor.HttpContext?.Request.Scheme}://" +
-        //                  $"{_httpContextAccessor.HttpContext?.Request.Host}/show/?link=" +
-        //                  $"{Uri.EscapeDataString(movie.Url)}&title={movie.Title}\">{movie.Title}</a>",
-        //         parseMode: ParseMode.Html,
-        //         cancellationToken: cancellationToken);
-        // }
+        var titleStrings = incoming.Text!.Split(' ', 2);
+        
+        if (titleStrings.Length < 2)
+        {
+            await SendTextMessage(incoming.Chat.Id, "пропущено \"название_фильма\"", cancellationToken);
+        }
+        
+        var movies = await _labService.GetMovies(titleStrings[1], cancellationToken);
+        
+        if (movies.Count == 0)
+        {
+            var rndInd = new Random().Next(0, Constants.Answers.Length);
+            await SendTextMessage(incoming.Chat.Id, Constants.Answers[rndInd], cancellationToken);
+            return;
+        }
+        
+        foreach (var movie in movies)
+        {
+            await _botClient.SendPhotoAsync(
+                chatId: incoming.Chat.Id,
+                photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
+                caption: $"Ссылка для просмотра: <a href=" +
+                         $"\"{_httpContextAccessor.HttpContext?.Request.Scheme}://" +
+                         $"{_httpContextAccessor.HttpContext?.Request.Host}/show/?link=" +
+                         $"{Uri.EscapeDataString(movie.Url)}&title={movie.Title}\">{movie.Title}</a>",
+                parseMode: ParseMode.Html,
+                cancellationToken: cancellationToken);
+        }
     }
     
     private async Task SendTextMessage(long chatId, string text, CancellationToken cancellationToken)
