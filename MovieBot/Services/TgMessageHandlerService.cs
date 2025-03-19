@@ -11,12 +11,15 @@ public class TgMessageHandlerService
     private readonly ITelegramBotClient _botClient;
     private readonly LabService _labService;
     private readonly LlmApi _llmApi;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService, LlmApi llmApi)
+    public TgMessageHandlerService(ITelegramBotClient botClient, LabService labService, 
+        LlmApi llmApi, IHttpContextAccessor httpContextAccessor)
     {
         _botClient = botClient;
         _labService = labService;
         _llmApi = llmApi;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
@@ -90,7 +93,10 @@ public class TgMessageHandlerService
             await _botClient.SendPhotoAsync(
                 chatId: incoming.Chat.Id,
                 photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
-                caption: $"Ссылка для просмотра: <a href=\"{movie.Url}\" rel=\"noreferrer\">{movie.Title}</a>",
+                caption: $"Ссылка для просмотра: <a href=" +
+                         $"\"{_httpContextAccessor.HttpContext?.Request.Scheme}://" +
+                         $"{_httpContextAccessor.HttpContext?.Request.Host}/show/" +
+                         $"{Uri.EscapeDataString(movie.Url)}/{movie.Title}\">{movie.Title}</a>",
                 parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken);
         }

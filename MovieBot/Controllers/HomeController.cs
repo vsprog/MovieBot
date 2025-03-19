@@ -40,5 +40,12 @@ namespace MovieBot.Controllers
         {
             return Ok(await llmApi.GetAnswer(Environment.UserName, query, cancellationToken));
         }
+
+        [HttpGet]
+        [Route("/show/{link}/{title}")]
+        public IActionResult Show(string link, string title)
+        {
+            return View((Uri.UnescapeDataString(link), title));
+        }
     }
 }

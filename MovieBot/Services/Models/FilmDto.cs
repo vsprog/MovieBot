@@ -6,7 +6,6 @@ namespace MovieBot.Services.Models;
 public class FilmDto
 {
     public string Url { get; init; }
-    public string Iframe => $"<iframe width=\"560\" height=\"315\" src=\"{Url}\" frameborder=\"0\" allowfullscreen></iframe>";
     public string Translate { get; init; }
     public string? Title { get; init; }
     public string? PosterLink { get; init; }

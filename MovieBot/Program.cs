@@ -38,6 +38,7 @@ builder.Services.AddSingleton<IVkApi>(_ =>
 builder.Services.AddHostedService<ConfigureWebhook>();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddMvc();
 builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
