@@ -7,8 +7,8 @@ namespace MovieBot.Controllers;
 /// <summary>
 /// Обработчик vk
 /// </summary>
-[Route("callback")]
-public class CallbackController : Controller
+[Route("vk")]
+public class VkController : Controller
 {
     /// <summary>
     /// Обработка сообщений vk
@@ -20,6 +20,7 @@ public class CallbackController : Controller
     /// <response code="400">Invalid request</response>
     /// <response code="500">Internal error</response>
     [HttpPost]
+    [Route("respond")]
     public async Task<IActionResult> Respond(
         [FromBody] GroupUpdate updates, 
         [FromServices] VkMessageHandlerService handlerService,

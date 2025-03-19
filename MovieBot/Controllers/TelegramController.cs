@@ -22,6 +22,7 @@ public class TelegramController : Controller
     /// <response code="500">Internal error</response>
     [HttpPost]
     [ValidateTelegramBot]
+    [Route("respond")]
     public async Task<IActionResult> Respond(
         [FromBody] Update update, 
         [FromServices] TgMessageHandlerService handlerService,
