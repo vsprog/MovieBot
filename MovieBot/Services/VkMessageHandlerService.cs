@@ -61,12 +61,6 @@ public class VkMessageHandlerService
                 break;
             default:
                 var title = incoming.Text[(incoming.Text.IndexOf(' ') + 1)..];
-                
-                if (string.IsNullOrEmpty(title))
-                {
-                    messages[0].Message = "пропущено \"найди название_фильма\" ";
-                }
-                
                 var movies = await _labService.GetMovies(title, cancellationToken);
 
                 if (movies.Count == 0)
