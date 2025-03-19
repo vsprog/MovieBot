@@ -77,7 +77,7 @@ public class TgMessageHandlerService
 
         if (string.IsNullOrEmpty(title))
         {
-            await SendTextMessage(incoming.Chat.Id, "пропущено название_фильма", cancellationToken);
+            await SendTextMessage(incoming.Chat.Id, "пропущено \"название_фильма\"", cancellationToken);
         }
         
         var movies = await _labService.GetMovies(title, cancellationToken);
