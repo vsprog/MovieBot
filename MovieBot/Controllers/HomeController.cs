@@ -42,8 +42,8 @@ namespace MovieBot.Controllers
         }
 
         [HttpGet]
-        [Route("/show/{link}/{title}")]
-        public IActionResult Show(string link, string title)
+        [Route("/show")]
+        public IActionResult Show([FromQuery]string link, [FromQuery]string title)
         {
             return View((Uri.UnescapeDataString(link), title));
         }

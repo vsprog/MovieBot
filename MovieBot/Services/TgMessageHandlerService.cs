@@ -95,8 +95,8 @@ public class TgMessageHandlerService
                 photo: InputFile.FromUri(movie.PosterLink ?? string.Empty),
                 caption: $"Ссылка для просмотра: <a href=" +
                          $"\"{_httpContextAccessor.HttpContext?.Request.Scheme}://" +
-                         $"{_httpContextAccessor.HttpContext?.Request.Host}/show/" +
-                         $"{Uri.EscapeDataString(movie.Url)}/{movie.Title}\">{movie.Title}</a>",
+                         $"{_httpContextAccessor.HttpContext?.Request.Host}/show/?link=" +
+                         $"{Uri.EscapeDataString(movie.Url)}&title={movie.Title}\">{movie.Title}</a>",
                 parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken);
         }
