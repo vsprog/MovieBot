@@ -78,6 +78,7 @@ public class TgMessageHandlerService
         if (titleStrings.Length < 2)
         {
             await SendTextMessage(incoming.Chat.Id, "пропущено \"название_фильма\"", cancellationToken);
+            return;
         }
         
         var movies = await _labService.GetMovies(titleStrings[1], cancellationToken);
