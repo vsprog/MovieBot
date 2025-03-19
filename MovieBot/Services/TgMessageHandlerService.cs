@@ -49,9 +49,13 @@ public class TgMessageHandlerService
         
         var action = message.Text.Split(' ')[0] switch
         {
-            "/start" => SendTextMessage(message, "Для просмотра фильма напишите: \"/find название_фильма\".\nДля общения напишите запрос в произвольной форме", cancellationToken),
+            "/start" => SendTextMessage(message.Chat.Id, "Для просмотра фильма напишите: \"/find название_фильма\".\nДля общения напишите запрос в произвольной форме", cancellationToken),
             "/find" => SendMoviesResult(message, cancellationToken), 
             _ => SendLlmMessage(message, cancellationToken)
+            
+            //TODO: add prompts
+            // /einstein => SendLlmMessage(message, "prompts", cancellationToken)
+            // /drBrown_ => SendLlmMessage(message, "prompts", cancellationToken)
         };
         
         await action;
@@ -63,28 +67,25 @@ public class TgMessageHandlerService
 
         foreach (var answer in answers)
         {
-            await SendTextMessage(incoming, answer, cancellationToken);
+            await SendTextMessage(incoming.Chat.Id, answer, cancellationToken);
         }
-    }
-    
-    private async Task SendTextMessage(Message incoming, string text,
-        CancellationToken cancellationToken)
-    { 
-        await _botClient.SendTextMessageAsync(
-            chatId: incoming.Chat.Id,
-            text: text,
-            cancellationToken: cancellationToken);
     }
 
     private async Task SendMoviesResult(Message incoming, CancellationToken cancellationToken)
     {
         var title = incoming.Text![(incoming.Text.IndexOf(' ') + 1)..];
+
+        if (string.IsNullOrEmpty(title))
+        {
+            await SendTextMessage(incoming.Chat.Id, "пропущено название_фильма", cancellationToken);
+        }
+        
         var movies = await _labService.GetMovies(title, cancellationToken);
 
         if (movies.Count == 0)
         {
             var rndInd = new Random().Next(0, Constants.Answers.Length);
-            await SendTextMessage(incoming, Constants.Answers[rndInd], cancellationToken);
+            await SendTextMessage(incoming.Chat.Id, Constants.Answers[rndInd], cancellationToken);
             return;
         }
 
@@ -100,5 +101,13 @@ public class TgMessageHandlerService
                 parseMode: ParseMode.Html,
                 cancellationToken: cancellationToken);
         }
+    }
+    
+    private async Task SendTextMessage(long chatId, string text, CancellationToken cancellationToken)
+    { 
+        await _botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: text,
+            cancellationToken: cancellationToken);
     }
 }

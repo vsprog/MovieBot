@@ -27,8 +27,13 @@ public class LlmApi
         };
     }
 
-    public async Task<IEnumerable<string>> GetAnswer(string chatId, string message, CancellationToken cancellationToken)
+    public async Task<IEnumerable<string>> GetAnswer(string chatId, string message, CancellationToken cancellationToken, string prompts = "")
     {
+        if (!string.IsNullOrEmpty(prompts))
+        {
+            _historyService.AddMessages(chatId, new List<LlmMessage>{new(LlmRole.System, prompts)});
+        }
+        
         _historyService.AddMessages(chatId, new List<LlmMessage>{new(LlmRole.User, message)});
         
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
