@@ -40,15 +40,14 @@ jobs:
           ContentSources.LabOrigin: ${{ secrets.MOVIE_BOT_LAB_ORIGIN }}
           ContentSources.Yohoho: ${{ secrets.MOVIE_BOT_YOHOHO }}
           ContentSources.YohoReferer: ${{ secrets.MOVIE_BOT_REFERER }}
-          Config.AccessToken: ${{ secrets.MOVIE_BOT_ACCESS_TOKEN }}
-          Config.Confirmation: ${{ secrets.MOVIE_BOT_CONFIRMATION }}
+          Vk.AccessToken: ${{ secrets.MOVIE_BOT_ACCESS_TOKEN }}
+          Vk.Confirmation: ${{ secrets.MOVIE_BOT_CONFIRMATION }}
           Telegram.HostAddress: ${{ secrets.TELEGRAM_HOST }}
           Telegram.BotToken: ${{ secrets.TELEGRAM_TOKEN }}
           Telegram.SecretToken: ${{ secrets.TELEGRAM_SECRET }}
           Llm.Model: ${{ secrets.LLM_MODEL }}
           Llm.ApiKey: ${{ secrets.LLM_API_KEY }}
           Llm.Provider: ${{ secrets.LLM_PROVIDER }}
-          GithubAuth.ClientId: ${{secrets.AUTH_GITHUB_CLIENT_ID}}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

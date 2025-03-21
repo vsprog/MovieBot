@@ -2,16 +2,13 @@ namespace MovieBot.Infrastructure.Swagger;
 
 public static class ApplicationBuiderExtensions
 {
-    public static void UseSwaggerWithOAuth(this IApplicationBuilder builder, string clientId)
+    public static void UseSwaggerWithOAuth(this IApplicationBuilder builder)
     {
         builder.UseSwagger();
-        builder.UseSwaggerUI(options =>
+        builder.UseSwaggerUI(o =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "MovieBot v1");
-            options.RoutePrefix = "swagger";
-            options.EnablePersistAuthorization();
-            options.OAuthClientId(clientId);
-            options.OAuthScopes("profile", "openid");
+            o.SwaggerEndpoint("/swagger/v1/swagger.json", "MovieBot v1");
+            o.RoutePrefix = "swagger";
         });
     }
 }
