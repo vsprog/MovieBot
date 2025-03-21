@@ -63,7 +63,16 @@ public class TgMessageHandlerService
 
     private async Task SendLlmMessage(Message incoming, CancellationToken cancellationToken)
     {
-        var answers = await _llmApi.GetAnswer(incoming.Chat.Id.ToString(), incoming.Text!, cancellationToken);
+        IEnumerable<string> answers;
+        
+        try
+        {
+            answers = await _llmApi.GetAnswer(incoming.Chat.Id.ToString(), incoming.Text!, cancellationToken);
+        }
+        catch (InvalidOperationException)
+        {
+            answers = new[] { Constants.DefaultLlmAnswer };
+        }
 
         foreach (var answer in answers)
         {

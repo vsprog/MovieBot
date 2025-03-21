@@ -79,7 +79,18 @@ namespace MovieBot.Controllers
             [FromServices] LlmApi llmApi,
             CancellationToken cancellationToken)
         {
-            return Ok(await llmApi.GetAnswer(Environment.UserName, query, cancellationToken));
+            IEnumerable<string> answers;
+        
+            try
+            {
+                answers = await llmApi.GetAnswer(Environment.UserName, query, cancellationToken);
+            }
+            catch (InvalidOperationException e)
+            {
+                answers = new[] { e.Message };
+            }
+            
+            return Ok(answers);
         }
 
         /// <summary>

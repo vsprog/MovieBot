@@ -2,7 +2,7 @@
 {
     public static class Constants
     {
-        public static string DefaultLlmAnswer = "повторите запрос";
+        public static string DefaultLlmAnswer = "повторите запрос позже";
         
         public static readonly string[] Answers = { 
             "Одна ошибка - и ты ошибся",
