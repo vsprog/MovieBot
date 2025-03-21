@@ -1,5 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MovieBot.Handlers;
-using MovieBot.Infrastructure.Auth;
 using MovieBot.Infrastructure.Configurations;
 using MovieBot.Infrastructure.HttpClients;
 using MovieBot.Infrastructure.Swagger;
@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddConfiguration(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddGitHubAuth(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
@@ -26,18 +27,17 @@ builder.Services.AddSingleton<IVkApi>(_ =>
     return api;
 });
 
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddMvc();
 builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
 
-//builder.Services.AddHostedService<ConfigureWebhook>();
+builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddSingleton<MessageHistoryService>();
 
 var app = builder.Build();
 app.UseDeveloperExceptionPage();
-app.ConfigureSwagger(builder.Configuration["GithubAuth:ClientId"]!);
+app.UseSwaggerWithOAuth(builder.Configuration["GithubAuth:ClientId"]!);
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
