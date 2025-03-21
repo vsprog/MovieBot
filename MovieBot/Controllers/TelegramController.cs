@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieBot.Filters;
-using MovieBot.Services;
+using MovieBot.Handlers;
 using Telegram.Bot.Types;
 
 namespace MovieBot.Controllers;

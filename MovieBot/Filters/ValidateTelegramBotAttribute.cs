@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
-using MovieBot.Infractructure;
+using MovieBot.Infrastructure;
+using MovieBot.Infrastructure.Configurations;
 
 namespace MovieBot.Filters;
 

@@ -1,10 +1,11 @@
 using MovieBot.ExternalSources.Llm;
-using MovieBot.Infractructure;
+using MovieBot.Helpers;
+using MovieBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace MovieBot.Services;
+namespace MovieBot.Handlers;
 
 public class TgMessageHandlerService
 {

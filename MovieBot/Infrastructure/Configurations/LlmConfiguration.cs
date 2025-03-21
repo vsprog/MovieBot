@@ -1,4 +1,4 @@
-namespace MovieBot.Infractructure;
+namespace MovieBot.Infrastructure.Configurations;
 
 public class LlmConfiguration
 {

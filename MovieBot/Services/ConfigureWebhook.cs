@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using MovieBot.Infractructure;
+using MovieBot.Infrastructure.Configurations;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 

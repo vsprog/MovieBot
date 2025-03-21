@@ -1,6 +1,7 @@
-using System.Reflection;
-using Microsoft.OpenApi.Models;
-using MovieBot.Infractructure;
+using MovieBot.Handlers;
+using MovieBot.Infrastructure.Configurations;
+using MovieBot.Infrastructure.HttpClients;
+using MovieBot.Infrastructure.Swagger;
 using MovieBot.Services;
 using VkNet;
 using VkNet.Abstractions;
@@ -14,16 +15,7 @@ var llmConfiguration = builder.Configuration.GetSection(LlmConfiguration.Configu
 builder.Services.Configure<LlmConfiguration>(llmConfiguration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "MovieBot api",
-    });
-    options.IncludeXmlComments(Assembly.GetExecutingAssembly());
-    options.CustomSchemaIds(type => type.FullName);
-});
+builder.Services.AddSwagger();
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
 builder.Services.AddScoped<LabService>();
@@ -48,12 +40,7 @@ builder.Services.AddSingleton<MessageHistoryService>();
 
 var app = builder.Build();
 app.UseDeveloperExceptionPage();
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = "swagger";
-});
+app.ConfigureSwagger();
 app.UseRouting();
 app.MapControllerRoute(
     name: "default",

@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using MovieBot.ExternalSources.Llm.Models;
-using MovieBot.Infractructure;
+using MovieBot.Infrastructure.Configurations;
 using MovieBot.Services;
 
 namespace MovieBot.ExternalSources.Llm;

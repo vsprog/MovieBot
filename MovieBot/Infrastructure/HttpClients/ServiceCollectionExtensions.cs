@@ -7,7 +7,7 @@ using MovieBot.ExternalSources.MovieLab;
 using MovieBot.ExternalSources.Yohoho;
 using Telegram.Bot;
 
-namespace MovieBot.Infractructure;
+namespace MovieBot.Infrastructure.HttpClients;
 
 public static class ServiceCollectionExtensions
 {
@@ -43,8 +43,7 @@ public static class ServiceCollectionExtensions
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 
-                var tgConfig = serviceProvider.GetConfiguration<TelegramConfiguration>();
-                TelegramBotClientOptions options = new(tgConfig.BotToken);
+                TelegramBotClientOptions options = new(config["Telegram:BotToken"]);
                 
                 return new TelegramBotClient(options, httpClient);
             });

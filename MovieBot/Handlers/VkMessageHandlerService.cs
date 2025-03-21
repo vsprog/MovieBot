@@ -1,10 +1,11 @@
 using MovieBot.ExternalSources;
-using MovieBot.Infractructure;
+using MovieBot.Helpers;
+using MovieBot.Services;
 using VkNet.Abstractions;
 using VkNet.Enums.StringEnums;
 using VkNet.Model;
 
-namespace MovieBot.Services;
+namespace MovieBot.Handlers;
 
 public class VkMessageHandlerService
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace MovieBot.Infractructure
+namespace MovieBot.Helpers
 {
     public static class ParserHelper
     {

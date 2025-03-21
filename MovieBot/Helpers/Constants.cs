@@ -1,4 +1,4 @@
-﻿namespace MovieBot.Infractructure
+﻿namespace MovieBot.Helpers
 {
     public static class Constants
     {
