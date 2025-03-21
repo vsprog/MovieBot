@@ -37,8 +37,6 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();
 app.UseSwaggerWithOAuth();
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
