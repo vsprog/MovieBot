@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="9.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.30" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.0" />

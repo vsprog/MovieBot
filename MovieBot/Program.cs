@@ -26,22 +26,21 @@ builder.Services.AddSingleton<IVkApi>(_ =>
     return api;
 });
 
-builder.Services.AddHostedService<ConfigureWebhook>();
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMvc();
 builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
 
+builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddSingleton<MessageHistoryService>();
 
 var app = builder.Build();
 app.UseDeveloperExceptionPage();
-app.UseAuthentication();
-app.UseAuthorization();
 app.ConfigureSwagger(builder.Configuration["GithubAuth:ClientId"]!);
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
