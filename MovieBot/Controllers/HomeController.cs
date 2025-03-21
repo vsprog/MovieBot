@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using MovieBot.ExternalSources.Llm;
 using MovieBot.Services;
@@ -25,6 +26,7 @@ namespace MovieBot.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(500)]
         [Route("/yohoho/{query}")]
+        [Authorize]
         public async Task<IActionResult> GetMovieYohoho(string query, 
             [FromServices] YohohoService yohohoService,
             CancellationToken cancellationToken)
@@ -50,6 +52,7 @@ namespace MovieBot.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(500)]
         [Route("/lab/{query}")]
+        [Authorize]
         public async Task<IActionResult> GetMovieLab(string query, 
             [FromServices] LabService labService,
             CancellationToken cancellationToken)
@@ -75,6 +78,7 @@ namespace MovieBot.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(500)]
         [Route("/llm/{query}")]
+        [Authorize]
         public async Task<IActionResult> GetLlmAnswer(string query, 
             [FromServices] LlmApi llmApi,
             CancellationToken cancellationToken)
@@ -87,7 +91,7 @@ namespace MovieBot.Controllers
             }
             catch (InvalidOperationException e)
             {
-                answers = new[] { e.Message };
+                answers = [e.Message];
             }
             
             return Ok(answers);

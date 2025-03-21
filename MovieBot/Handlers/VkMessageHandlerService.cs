@@ -34,7 +34,7 @@ public class VkMessageHandlerService
     {
         return update.Type.Value switch
         {
-            GroupUpdateType.Confirmation => _configuration["Config:Confirmation"],
+            GroupUpdateType.Confirmation => _configuration["Vk:Confirmation"],
             GroupUpdateType.MessageNew => await HandleMessageAsync(((MessageNew)update.Instance).Message, cancellationToken),
             _ => throw new ArgumentOutOfRangeException("Invalid type property")
         };

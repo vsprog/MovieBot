@@ -48,6 +48,9 @@ jobs:
           Llm.Model: ${{ secrets.LLM_MODEL }}
           Llm.ApiKey: ${{ secrets.LLM_API_KEY }}
           Llm.Provider: ${{ secrets.LLM_PROVIDER }}
+          GithubAuth.ClientId: ${{secrets.AUTH_GITHUB_CLIENT_ID}}
+          GithubAuth.ClientSecret: ${{secrets.AUTH_GITHUB_SECRET}}
+          GithubAuth.CallbackPath: ${{secrets.AUTH_GITHUB_CALLBACK}}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

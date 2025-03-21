@@ -11,24 +11,24 @@ namespace MovieBot.Infrastructure.HttpClients;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddHttpClients(this IServiceCollection services, ConfigurationManager config)
+    public static void AddHttpClients(this IServiceCollection services, IConfiguration config)
     {
         services.AddConfiguredClient<KinopoiskClient>(client =>
         {
-            client.BaseAddress = new Uri(config["ContentSources:Kinopoisk"]);
+            client.BaseAddress = new Uri(config["ContentSources:Kinopoisk"]!);
             client.DefaultRequestHeaders.Add("User-Agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         });
 
         services.AddConfiguredClient<YohohoClient>(client =>
         {
-            client.BaseAddress = new Uri(config["ContentSources:Yohoho"]);
+            client.BaseAddress = new Uri(config["ContentSources:Yohoho"]!);
             client.DefaultRequestHeaders.Add("referer", config["ContentSources:YohoReferer"]);
         });
         
         services.AddConfiguredClient<MovieLabClient>(client =>
         {
-            client.BaseAddress = new Uri(config["ContentSources:Lab"]);
+            client.BaseAddress = new Uri(config["ContentSources:Lab"]!);
             client.DefaultRequestHeaders.Add("referer", config["ContentSources:LabReferer"]);
             client.DefaultRequestHeaders.Add("Origin", config["ContentSources:LabOrigin"]);
             client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36");
@@ -43,14 +43,14 @@ public static class ServiceCollectionExtensions
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 
-                TelegramBotClientOptions options = new(config["Telegram:BotToken"]);
+                TelegramBotClientOptions options = new(config["Telegram:BotToken"]!);
                 
                 return new TelegramBotClient(options, httpClient);
             });
 
         services.AddHttpClient<LlmApi>(client =>
         {
-            client.BaseAddress = new Uri(config["Llm:Provider"]);
+            client.BaseAddress = new Uri(config["Llm:Provider"]!);
             client.DefaultRequestHeaders.Authorization = 
                 new AuthenticationHeaderValue("Bearer", config["Llm:ApiKey"]);
             client.DefaultRequestHeaders.Accept.Add(

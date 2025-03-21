@@ -1,4 +1,5 @@
 using MovieBot.Handlers;
+using MovieBot.Infrastructure.Auth;
 using MovieBot.Infrastructure.Configurations;
 using MovieBot.Infrastructure.HttpClients;
 using MovieBot.Infrastructure.Swagger;
@@ -9,12 +10,9 @@ using VkNet.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var botConfigurationSection = builder.Configuration.GetSection(TelegramConfiguration.Configuration);
-builder.Services.Configure<TelegramConfiguration>(botConfigurationSection);
-var llmConfiguration = builder.Configuration.GetSection(LlmConfiguration.Configuration);
-builder.Services.Configure<LlmConfiguration>(llmConfiguration);
-
+builder.Services.AddConfiguration(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddGitHubAuth(builder.Configuration);
 builder.Services.AddSwagger();
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
@@ -24,7 +22,7 @@ builder.Services.AddScoped<TgMessageHandlerService>();
 builder.Services.AddSingleton<IVkApi>(_ =>
 {
     var api = new VkApi();
-    api.Authorize(new ApiAuthParams { AccessToken = builder.Configuration["Config:AccessToken"] });
+    api.Authorize(new ApiAuthParams { AccessToken = builder.Configuration["Vk:AccessToken"] });
     return api;
 });
 
@@ -40,7 +38,9 @@ builder.Services.AddSingleton<MessageHistoryService>();
 
 var app = builder.Build();
 app.UseDeveloperExceptionPage();
-app.ConfigureSwagger();
+app.UseAuthentication();
+app.UseAuthorization();
+app.ConfigureSwagger(builder.Configuration["GithubAuth:ClientId"]!);
 app.UseRouting();
 app.MapControllerRoute(
     name: "default",

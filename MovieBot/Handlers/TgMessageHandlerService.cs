@@ -72,7 +72,7 @@ public class TgMessageHandlerService
         }
         catch (InvalidOperationException)
         {
-            answers = new[] { Constants.DefaultLlmAnswer };
+            answers = [Constants.DefaultLlmAnswer];
         }
 
         foreach (var answer in answers)

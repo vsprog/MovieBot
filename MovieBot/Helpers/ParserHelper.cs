@@ -7,7 +7,7 @@ namespace MovieBot.Helpers
         public static Dictionary<string, string> DecodeStreams(string data)
         {
             const string salt = "@#!^$";
-            var iterations = new[] { 2, 3 };
+            List<int> iterations = [2, 3];
             var saltCombos = iterations
                 .SelectMany(it => Product(salt, it), (it, s) => System.Text.Encoding.UTF8.GetBytes(s))
                 .Select(Convert.ToBase64String)
@@ -21,7 +21,7 @@ namespace MovieBot.Helpers
             var dataBytes = Convert.FromBase64String(data);
             var result = System.Text.Encoding.UTF8.GetString(dataBytes);
 
-            return result.Split(new[] { ',' })
+            return result.Split([','])
                 .ToDictionary(
                     key => Regex.Match(key, @"(?<=\[).*(?=\])").Value, 
                     value => Regex.Match(value, @"(?<=or\s).*").Value);
@@ -29,7 +29,7 @@ namespace MovieBot.Helpers
 
         private static List<string> Product(string income, int times)
         {
-            var res = new List<string>() { string.Empty };
+            var res = new List<string> { string.Empty };
 
             for (var i = 0; i < times; i++)
             {
