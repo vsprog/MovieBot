@@ -35,7 +35,7 @@ builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
 
-//builder.Services.AddHostedService<ConfigureWebhook>();
+builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddSingleton<MessageHistoryService>();
 
 var app = builder.Build();

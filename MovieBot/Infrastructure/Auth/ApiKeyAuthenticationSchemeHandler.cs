@@ -8,18 +8,19 @@ namespace MovieBot.Infrastructure.Auth;
 
 public class ApiKeyAuthenticationSchemeHandler : AuthenticationHandler<ApiKeyAuthenticationSchemeOptions>
 {
-    private readonly ApiKeyAuthenticationSchemeOptions _options;
+    private readonly string _apikeyname = "Apikey";
     
     public ApiKeyAuthenticationSchemeHandler(IOptionsMonitor<ApiKeyAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
-    {
-        _options = options.CurrentValue;
-    }
+    { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var apiKey = Context.Request.Headers["Apikey"];
+        if (!Context.Request.Headers.TryGetValue(_apikeyname, out var extractedApiKey))
+        {
+            return Task.FromResult(AuthenticateResult.Fail("Api Key was not provided"));
+        }
         
-        if (apiKey != Options.ApiKey) 
+        if (!extractedApiKey.Equals(Options.ApiKey)) 
         {
             return Task.FromResult(AuthenticateResult.Fail("Invalid Apikey"));
         }
