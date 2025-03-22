@@ -16,6 +16,23 @@ public static class ServiceCollectionExtensions
             });
             options.IncludeXmlComments(Assembly.GetExecutingAssembly());
             options.CustomSchemaIds(type => type.FullName);
+            
+            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme()
+            {
+                Type = SecuritySchemeType.ApiKey,
+                In = ParameterLocation.Header,
+                Name = "ApiKey"
+            });
+            
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
+                    }, []
+                }
+            });
         });
     }
 }

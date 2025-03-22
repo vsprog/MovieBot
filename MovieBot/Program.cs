@@ -1,4 +1,5 @@
 using MovieBot.Handlers;
+using MovieBot.Infrastructure.Auth;
 using MovieBot.Infrastructure.Configurations;
 using MovieBot.Infrastructure.HttpClients;
 using MovieBot.Infrastructure.Swagger;
@@ -12,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddConfiguration(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication("ApiKey")
+    .AddScheme<ApiKeyAuthenticationSchemeOptions, ApiKeyAuthenticationSchemeHandler>(
+        "ApiKey", opts => opts.ApiKey = builder.Configuration["Auth:ApiKey"]!
+    );
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<YohohoService>();
@@ -30,7 +35,7 @@ builder.Services
     .AddControllers()
     .AddNewtonsoftJson();
 
-builder.Services.AddHostedService<ConfigureWebhook>();
+//builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddSingleton<MessageHistoryService>();
 
 var app = builder.Build();
