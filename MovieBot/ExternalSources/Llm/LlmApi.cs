@@ -31,10 +31,10 @@ public class LlmApi
     {
         if (!string.IsNullOrEmpty(prompts))
         {
-            _historyService.AddMessages(chatId, new List<LlmMessage>{new(LlmRole.System, prompts)});
+            _historyService.AddMessages(chatId, [new LlmMessage(LlmRole.System, prompts)]);
         }
         
-        _historyService.AddMessages(chatId, new List<LlmMessage>{new(LlmRole.User, message)});
+        _historyService.AddMessages(chatId, [new LlmMessage(LlmRole.User, message)]);
         
         var response = await _client.PostAsJsonAsync(string.Empty, new LlmRequest
         {
@@ -45,7 +45,10 @@ public class LlmApi
         
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            throw new InvalidOperationException(response.StatusCode.ToString() + response.Content.ReadAsStringAsync(cancellationToken));
+            _historyService.ClearHistory();
+            var errorMessage = await response.Content.ReadAsStringAsync(cancellationToken);
+            
+            throw new InvalidOperationException($"Code: {response.StatusCode}; {errorMessage}");
         }
         
         var content = await response.Content.ReadFromJsonAsync<LlmResponse>(_options, cancellationToken);

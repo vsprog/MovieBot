@@ -21,6 +21,11 @@ public class MessageHistoryService
                 return oldList;
             });
     }
+
+    public void ClearHistory()
+    {
+        _messageHistory.Clear();
+    }
     
     public List<LlmMessage> GetHistory(string chatId)
     {
