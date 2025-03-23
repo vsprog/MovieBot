@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using MovieBot.ExternalSources.Llm;
+using MovieBot.Infrastructure.Authorization;
 using MovieBot.Services;
 using MovieBot.Services.Models;
 
@@ -26,7 +27,7 @@ namespace MovieBot.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(500)]
         [Route("/yohoho/{query}")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetMovieYohoho(string query, 
             [FromServices] YohohoService yohohoService,
             CancellationToken cancellationToken)
@@ -52,7 +53,7 @@ namespace MovieBot.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(500)]
         [Route("/lab/{query}")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetMovieLab(string query, 
             [FromServices] LabService labService,
             CancellationToken cancellationToken)
@@ -78,7 +79,7 @@ namespace MovieBot.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(500)]
         [Route("/llm/{query}")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetLlmAnswer(string query, 
             [FromServices] LlmApi llmApi,
             CancellationToken cancellationToken)

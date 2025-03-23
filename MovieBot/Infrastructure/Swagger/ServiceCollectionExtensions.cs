@@ -29,7 +29,11 @@ public static class ServiceCollectionExtensions
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme, 
+                            Id = "ApiKey"
+                        }
                     }, []
                 }
             });

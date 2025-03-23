@@ -5,4 +5,5 @@ namespace MovieBot.Infrastructure.Configurations;
 public class ApiKeyAuthenticationSchemeOptions : AuthenticationSchemeOptions
 {
     public string ApiKey {get; set;}
+    public string TelegramSecretToken {get; set;}
 }

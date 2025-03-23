@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MovieBot.Filters;
 using MovieBot.Handlers;
+using MovieBot.Infrastructure.Authorization;
 using Telegram.Bot.Types;
 
 namespace MovieBot.Controllers;
@@ -21,7 +22,7 @@ public class TelegramController : Controller
     /// <response code="400">Invalid request</response>
     /// <response code="500">Internal error</response>
     [HttpPost]
-    [ValidateTelegramBot]
+    [Authorize(Roles = Roles.TelegramBot)]
     [Route("respond")]
     public async Task<IActionResult> Respond(
         [FromBody] Update update, 
