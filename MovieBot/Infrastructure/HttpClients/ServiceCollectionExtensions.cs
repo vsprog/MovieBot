@@ -11,13 +11,14 @@ namespace MovieBot.Infrastructure.HttpClients;
 
 public static class ServiceCollectionExtensions
 {
+    private const string UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36";
+
     public static void AddHttpClients(this IServiceCollection services, IConfiguration config)
     {
         services.AddConfiguredClient<KinopoiskClient>(client =>
         {
             client.BaseAddress = new Uri(config["ContentSources:Kinopoisk"]!);
-            client.DefaultRequestHeaders.Add("User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
         });
 
         services.AddConfiguredClient<YohohoClient>(client =>
@@ -31,14 +32,14 @@ public static class ServiceCollectionExtensions
             client.BaseAddress = new Uri(config["ContentSources:Lab"]!);
             client.DefaultRequestHeaders.Add("referer", config["ContentSources:LabReferer"]);
             client.DefaultRequestHeaders.Add("Origin", config["ContentSources:LabOrigin"]);
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
         });
         
         services.AddHttpClient<FileLoader>();
         
         services.AddHttpClient("telegram_bot_client")
-            .AddTypedClient<ITelegramBotClient>((httpClient, serviceProvider) =>
+            .AddTypedClient<ITelegramBotClient>((httpClient, _) =>
             {
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
@@ -63,7 +64,7 @@ public static class ServiceCollectionExtensions
         where TClient : class
     {
         services.AddHttpClient<TClient>(configureClient)
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 UseDefaultCredentials = true,
                 Credentials = CredentialCache.DefaultCredentials
